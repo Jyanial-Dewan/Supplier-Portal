@@ -1,6 +1,5 @@
-
 import { useState, useContext } from "react";
-import { supabase } from "../client";
+import { supabase } from "@/client";
 import { useNavigate } from "react-router-dom"
 import GlobalContext from "@/context/GlobalContext";
 

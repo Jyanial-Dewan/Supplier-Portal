@@ -7,12 +7,10 @@ import AddUserPage from "./pages/AddUserPage"
 import GlobalContext from "./context/GlobalContext"
 import { useState, useEffect } from "react"
 import { Route, Routes } from "react-router-dom"
-import { supabase } from "./client"
 import UpdateUserPage from "./pages/UpdateUserPage"
 import LoginPage from "./pages/LoginPage"
 import Home from "./pages/Home"
-
-
+import { supabase } from "./client"
 
 const App = () => {
   const [token, setToken] = useState(false);
