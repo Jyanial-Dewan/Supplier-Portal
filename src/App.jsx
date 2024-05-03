@@ -9,6 +9,7 @@ import { useState, useEffect } from "react"
 import { Route, Routes } from "react-router-dom"
 import UpdateUserPage from "./pages/UpdateUserPage"
 import LoginPage from "./pages/LoginPage"
+import ProfilePage from "./pages/ProfilePage"
 import Home from "./pages/Home"
 import { supabase } from "./client"
 
@@ -68,6 +69,7 @@ const App = () => {
           <Route path="/notification/draft" element={<DraftPage/>}/>
           <Route path="/allusers" element={<AllUsersPage/>}/>
           <Route path="/adduser" element={<AddUserPage/>}/>
+          <Route path="/profile" element={<ProfilePage/>}/>
           <Route path="/updateuser/:id" element={<UpdateUserPage/>}/>
         </Route> 
       </Routes>

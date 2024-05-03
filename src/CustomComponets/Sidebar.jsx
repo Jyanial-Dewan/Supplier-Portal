@@ -97,9 +97,11 @@ const Sidebar = () => {
             <p className={open? "text-lg ml-2": "hidden"}>Items</p>
         </div>
 
-        <div className="mt-4 flex items-center cursor-pointer">
-            <FaRegUser className="text-[1.2rem]"/>
-            <p className={open? "text-lg ml-2": "hidden"}>{token.user.email}</p>
+        <div>
+            <Link to='/profile' className="mt-4 flex items-center cursor-pointer">
+                <FaRegUser className="text-[1.2rem]"/>
+                <p className={open? "text-lg ml-2": "hidden"}>{token.user.email}</p>
+            </Link>
         </div>
       </div>
 
