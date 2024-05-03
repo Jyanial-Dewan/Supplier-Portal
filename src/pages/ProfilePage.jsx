@@ -26,7 +26,7 @@ const ProfilePage = () => {
             
             <h2 className="text-center font-semibold text-lg mb-4">Log In QR Code</h2>
             <QRCode values={supabaseKey} size={250} className={show? "mt-0": "hidden"}/>
-            <button className="bg-black text-white mt-4 p-1 rounded-sm" onClick={()=>setShow(!show)}>Show Log IN QR code</button>
+            <button className="bg-black text-white mt-4 p-3 rounded-sm" onClick={()=>setShow(!show)}>{show? "Hide": "Show" } Log In QR code</button>
         </div>
       </div>
     </section>
