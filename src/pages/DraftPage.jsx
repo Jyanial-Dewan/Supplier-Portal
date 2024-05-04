@@ -11,7 +11,7 @@ const DraftPage = () => {
     
   return (
     <section className="z-0">
-        <div className={open? 'pt-24 pl-60 max-w-[100vw] duration-1000 z-0': 'pt-24 pl-20 max-w-[100vw] duration-1000 z-0'}>
+        <div className={open? 'pt-24 pl-24 max-w-[100vw] duration-1000 z-0': 'pt-24 pl-[16.5rem] max-w-[100vw] duration-1000 z-0'}>
             <h2 className="text-xl font-bold text-center">Notifications</h2>
             <div className="flex mt-6">
                 <div className="flex flex-col bg-gray-100 px-4 py-2 fixed">

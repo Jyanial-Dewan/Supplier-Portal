@@ -11,6 +11,7 @@ import UpdateUserPage from "./pages/UpdateUserPage"
 import LoginPage from "./pages/LoginPage"
 import ProfilePage from "./pages/ProfilePage"
 import Home from "./pages/Home"
+import ErrorPage from "./pages/ErrorPage"
 import { supabase } from "./client"
 
 const App = () => {
@@ -47,7 +48,7 @@ const App = () => {
   }, []);
 
   const deleteUser = async (userId)=> {
-    
+    alert("Do you want delete this user?")
     const { error } = await supabase
           .from('departments_duplicate')
           .delete()
@@ -72,6 +73,7 @@ const App = () => {
           <Route path="/profile" element={<ProfilePage/>}/>
           <Route path="/updateuser/:id" element={<UpdateUserPage/>}/>
         </Route> 
+        <Route path="*" element={<ErrorPage/>}/>
       </Routes>
     </GlobalContext.Provider>
   )

@@ -21,7 +21,7 @@ const AllUsersPage = () => {
   
   
     return (
-    <section className={open? "pt-32 pl-[17rem] pr-4 duration-1000" : "pt-32 pl-[7rem] pr-4 duration-1000"}>
+    <section className={open? "pt-32 pl-[7rem] pr-4 duration-1000" : "pt-32 pl-[17.5rem] pr-4 duration-1000"}>
         <h2 className="text-2xl font-bold text-center mb-6 p-1 border border-gray-100">All Users</h2>
       <Table className="border border-gray-100">
         <TableHeader className="bg-gray-100">

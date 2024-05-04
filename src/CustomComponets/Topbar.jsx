@@ -25,9 +25,9 @@ const Topbar = () => {
   }
   return (
     <div className="fixed z-50 bg-white h-12 w-full shadow-xl flex justify-end items-center">
-      <div className="text-[1.5rem] cursor-pointer p-2 hover:bg-black/10">
+      <Link to='/homepage' className="text-[1.5rem] cursor-pointer p-2 hover:bg-black/10">
         <FiHome/> 
-      </div>
+      </Link>
 
       <div className="text-[1.5rem] ml-8 cursor-pointer p-2 hover:bg-black/10">
         <FaRegBell/> 
