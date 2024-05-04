@@ -32,7 +32,7 @@ const AddUserPage = () => {
     const addUser = async (e)=> {
         e.preventDefault()
         const { data, error } = await supabase
-                                .from('departments_duplicate')
+                                .from('departments')
                                 .insert(
                                     { first_name: user.first_name,
                                         middle_name: user.middle_name,

@@ -28,7 +28,7 @@ const UpdateUserPage = () => {
     useEffect(()=>{
         const fetchSingleUser = async () => {
             let { data, error } = await supabase
-                                                        .from('departments_duplicate')
+                                                        .from('departments')
                                                         .select("*")
                                                         .eq('id', id.id)
                                                         
@@ -58,11 +58,12 @@ const UpdateUserPage = () => {
     const updateUser = async (e) => {
         e.preventDefault()
         const { data, error } = await supabase
-                                .from('departments_duplicate')
+                                .from('departments')
                                 .update({ first_name: first_name,
                                           middle_name: middle_name,
                                           last_name: last_name,
                                           user_name: user_name,
+                                          email: email,
                                           job_title: job_title,
                                           org_id: org_id,
                                           org_type: org_type,

@@ -28,7 +28,7 @@ const ProSidebar = () => {
         <IoMdClose className='text-4xl p-2 duration-500 bg-gray-100 rounded-md flex justify-center mx-auto my-2 cursor-pointer hover:rotate-[360deg]'
         onClick={handleClick}/>}
         <Menu>
-            <SubMenu style={{transitionDuration: '500'}} label="User Management" icon={<LuUserPlus className='text-2xl'/>}>
+            <SubMenu style={{transitionDuration: '500', zIndex: '10'}} label="User Management" icon={<LuUserPlus className='text-2xl'/>}>
                 <MenuItem component={<Link to={'/adduser'}/>} icon={<LuUserPlus className='text-2xl'/>}> Add User </MenuItem>
                 <MenuItem component={<Link to={'/allusers'}/>} icon={<FiUsers className='text-2xl'/>}> All Users </MenuItem>
                 <MenuItem component={<Link to={'/invite-user'}/>} icon={<FiSend className='text-2xl'/>}> Invite User </MenuItem>

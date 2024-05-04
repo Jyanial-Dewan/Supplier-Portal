@@ -34,10 +34,10 @@ const App = () => {
   
   const fetchAllUsers = async () => {
     try { 
-        let { data: departments_duplicate } = await supabase
-          .from('departments_duplicate')
+        let { data: departments } = await supabase
+          .from('departments')
           .select('*')
-          setAllUsersData(departments_duplicate);
+          setAllUsersData(departments);
     } catch (error) {
         console.log(error);
     }
@@ -50,7 +50,7 @@ const App = () => {
   const deleteUser = async (userId)=> {
     alert("Do you want delete this user?")
     const { error } = await supabase
-          .from('departments_duplicate')
+          .from('departments')
           .delete()
           .eq('user_id', userId)
 
