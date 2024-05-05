@@ -2,33 +2,34 @@ import { useState, useEffect, useContext } from "react"
 import { supabase } from "@/client";
 import { useParams, useNavigate } from "react-router-dom";
 import GlobalContext from "@/context/GlobalContext";
-import { useToast } from "@/components/ui/use-toast"
+import toast from "react-hot-toast";
 
 
-
-const UpdateUserPage = () => {
+  const UpdateUserPage = () => {
     const context = useContext(GlobalContext);
     const { fetchAllUsers } = context;
     const id = useParams()
     const navigate = useNavigate();
-    const {toast} = useToast();
     
-    const [email, setEmail] = useState('')
-    const [user_name, setUser_name] = useState('')
-    const [first_name, setFirst_name] = useState('')
-    const [middle_name, setMiddle_name] = useState('')
-    const [last_name, setLast_name] = useState('')
-    const [job_title, setJob_title] = useState('')
-    const [org_type, setOrg_type] = useState('')
-    const [org_id, setOrg_id] = useState('')
-    const [org_id_column_name, setOrg_id_column_name] = useState('')
-    const [password, setPassword] = useState('')
     
+     const [email, setEmail] = useState('')
+     const [user_name, setUser_name] = useState('')
+     const [first_name, setFirst_name] = useState('')
+     const [middle_name, setMiddle_name] = useState('')
+     const [last_name, setLast_name] = useState('')
+     const [job_title, setJob_title] = useState('')
+     const [org_type, setOrg_type] = useState('')
+     const [org_id, setOrg_id] = useState('')
+     const [org_id_table_name, SetOrg_id_table_name] = useState('')
+     const [password, setPassword] = useState('')
+    // const [user, setUser] = useState({
+
+    // })
    
     useEffect(()=>{
         const fetchSingleUser = async () => {
             let { data, error } = await supabase
-                                                        .from('departments')
+                                                        .from('def_persons')
                                                         .select("*")
                                                         .eq('id', id.id)
                                                         
@@ -45,7 +46,7 @@ const UpdateUserPage = () => {
                 setJob_title(data[0].job_title)
                 setOrg_id(data[0].org_id)
                 setOrg_type(data[0].org_type)
-                setOrg_id_column_name(data[0].org_id_column_name)
+                SetOrg_id_table_name(data[0].org_id_table_name)
                 setEmail(data[0].email)
                 
             }
@@ -58,16 +59,15 @@ const UpdateUserPage = () => {
     const updateUser = async (e) => {
         e.preventDefault()
         const { data, error } = await supabase
-                                .from('departments')
+                                .from('def_persons')
                                 .update({ first_name: first_name,
                                           middle_name: middle_name,
                                           last_name: last_name,
                                           user_name: user_name,
-                                          email: email,
                                           job_title: job_title,
                                           org_id: org_id,
                                           org_type: org_type,
-                                          org_id_column_name: org_id_column_name,
+                                          org_id_table_name: org_id_table_name,
                                         })
                                 .eq('id', id.id)
                                 .select()
@@ -77,12 +77,15 @@ const UpdateUserPage = () => {
 
             if(error){
                 console.log(error)
+                toast.error('there is a problem updating user')
+            } else {
+                toast.success('the user has been updated successfullu');
             }
-            toast({
-                Description: "the user information has been updated"
-            });
-            fetchAllUsers();
+
+            fetchAllUsers()
             navigate('/allusers')
+            
+            
             
         
     }
@@ -92,7 +95,7 @@ const UpdateUserPage = () => {
         
       <form className="w-[700px] px-6 py-4 mb-8 border border-gray-100 shadow-md flex flex-col justify-center items-center"
            onSubmit={updateUser}>
-        <h2 className="text-xl text-center">Add User</h2>
+        <h2 className="text-xl text-center">Upadate User</h2>
         <div className="flex flex-col gap-2 mb-4 w-full">
             <label htmlFor="firstName">First Name</label>
             <input type="text"
@@ -167,11 +170,11 @@ const UpdateUserPage = () => {
         </div>
 
         <div className="flex flex-col gap-2 mb-4 w-full">
-            <label htmlFor="lastName">Organization ID Column Name</label>
+            <label htmlFor="lastName">Organization ID Table Name</label>
             <input type="text"
-                   value={org_id_column_name}
+                   value={org_id_table_name}
                    name="last_name"
-                   onChange={(e)=>setOrg_id_column_name(e.target.value)}
+                   onChange={(e)=>SetOrg_id_table_name(e.target.value)}
                    className="border-2 border-gray-100 px-4 h-12 rounded-md"/>
         </div>
 

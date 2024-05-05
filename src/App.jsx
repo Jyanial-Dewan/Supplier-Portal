@@ -13,6 +13,7 @@ import ProfilePage from "./pages/ProfilePage"
 import Home from "./pages/Home"
 import ErrorPage from "./pages/ErrorPage"
 import { supabase } from "./client"
+import toast from "react-hot-toast"
 
 const App = () => {
   const [token, setToken] = useState(false);
@@ -34,10 +35,10 @@ const App = () => {
   
   const fetchAllUsers = async () => {
     try { 
-        let { data: departments } = await supabase
-          .from('departments')
+        let { data: users } = await supabase
+          .from('user_persons_view')
           .select('*')
-          setAllUsersData(departments);
+          setAllUsersData(users);
     } catch (error) {
         console.log(error);
     }
@@ -48,13 +49,18 @@ const App = () => {
   }, []);
 
   const deleteUser = async (userId)=> {
-    alert("Do you want delete this user?")
+    
     const { error } = await supabase
-          .from('departments')
+          .from('def_persons')
           .delete()
           .eq('user_id', userId)
 
-          console.log(error)
+          if(error) {
+            console.log(error)
+            toast.error('there is a problem deleting user')
+          } else {
+            toast.success('the user has been deleted successfully')
+          }
           fetchAllUsers();
   }
 

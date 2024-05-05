@@ -14,21 +14,19 @@ import { Link } from "react-router-dom";
 const ProSidebar = () => {
     const context = useContext(GlobalContext);
     const {open, setOpen, token} = context;
-    //const [collapsed, setCollapsed] = useState(false)
     
-     const handleClick = ()=> {
+    const handleClick = ()=> {
          setOpen((prevState) => !prevState) ;
-        
-     }
+    }
   return (
-    <Sidebar collapsed={open} transitionDuration={1000} style={{ display: 'flex', flexDirection: 'column', height: '100vh', position: 'fixed', paddingTop: '4rem', scrollBehavior: 'none'}} >
+    <Sidebar collapsed={open} transitionDuration={1000} style={{ display: 'flex', flexDirection: 'column', height: '100vh', position: 'fixed', paddingTop: '4rem', scrollBehavior: 'none', zIndex: '20'}} >
         <img src={logo} alt="" />
         {open ? <IoMenu className='text-4xl p-2 duration-500 bg-gray-100 rounded-md flex justify-center mx-auto my-2 cursor-pointer hover:rotate-[360deg]'
                 onClick={handleClick}/> :
         <IoMdClose className='text-4xl p-2 duration-500 bg-gray-100 rounded-md flex justify-center mx-auto my-2 cursor-pointer hover:rotate-[360deg]'
         onClick={handleClick}/>}
         <Menu>
-            <SubMenu style={{transitionDuration: '500', zIndex: '10'}} label="User Management" icon={<LuUserPlus className='text-2xl'/>}>
+            <SubMenu label="User Management" icon={<LuUserPlus className='text-2xl'/>}>
                 <MenuItem component={<Link to={'/adduser'}/>} icon={<LuUserPlus className='text-2xl'/>}> Add User </MenuItem>
                 <MenuItem component={<Link to={'/allusers'}/>} icon={<FiUsers className='text-2xl'/>}> All Users </MenuItem>
                 <MenuItem component={<Link to={'/invite-user'}/>} icon={<FiSend className='text-2xl'/>}> Invite User </MenuItem>
