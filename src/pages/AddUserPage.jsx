@@ -36,7 +36,6 @@ const AddUserPage = () => {
     async function addUser (e) {
         e.preventDefault();
         try {
-          // eslint-disable-next-line no-unused-vars
           const { data, error } = await supabase.auth.signUp(
             {
               email: user.email,
@@ -49,7 +48,6 @@ const AddUserPage = () => {
                     user_name: user.user_name,
                     job_title: user.job_title,
                     domain_name: user.domain_name,
-                  
                 }
               }
             }

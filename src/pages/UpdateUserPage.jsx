@@ -72,6 +72,7 @@ import toast from "react-hot-toast";
             org_id: org_id,
             org_type: org_type,
             org_id_table_name: org_id_table_name,
+            
           }
     })
   
@@ -84,7 +85,7 @@ import toast from "react-hot-toast";
                 console.log(error)
                 toast.error('there is a problem updating user')
             } else {
-                toast.success('the user has been updated successfullu');
+                toast.success('the user has been updated successfully');
             }
 
             fetchAllUsers()
@@ -181,7 +182,7 @@ import toast from "react-hot-toast";
 
         <div className="flex flex-col gap-2 mb-4 w-full">
             <label htmlFor="lastName">Password</label>
-            <input type="text"
+            <input type="Password"
                    value={password}
                    name="last_name"
                    onChange={(e)=>setPassword(e.target.value)}
