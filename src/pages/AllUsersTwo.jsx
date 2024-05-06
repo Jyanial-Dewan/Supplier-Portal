@@ -12,28 +12,31 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-// import {
-//   Pagination,
-//   PaginationContent,
-//   PaginationEllipsis,
-//   PaginationItem,
-//   PaginationLink,
-//   PaginationNext,
-//   PaginationPrevious,
-// } from "@/components/ui/pagination"
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
 
 import GlobalContext from "@/context/GlobalContext";
 import { Link } from "react-router-dom";
 import yes from "../images/yes.png"
 import no from "../images/error.png"
  
-const AllUsersPage = () => {
+const AllUsersTwo = () => {
   const context = useContext(GlobalContext)
   const {open, allUsersData, deleteUser, fetchAllUsers} = context
 
   const sortedAllusers = allUsersData.sort(function(a,b){
     return a.user_id - b.user_id
   })
+  
+
+  const slicedAllUsers = sortedAllusers.slice(5,10)
 
   return (
     <section className={open? "pt-24 pl-[7rem] pr-4 duration-1000" : "pt-24 pl-[17.5rem] pr-4 duration-1000"}>
@@ -59,7 +62,7 @@ const AllUsersPage = () => {
             </TableRow>
         </TableHeader>
         <TableBody>
-            {sortedAllusers.map((data)=>(
+            {slicedAllUsers.map((data)=>(
                 <>
                 <TableRow key={Math.floor(Math.random()*1000000)}>
                     <TableCell  className="w-[100px]">{data.id}</TableCell>
@@ -96,16 +99,16 @@ const AllUsersPage = () => {
         </TableBody>
       </Table>
 
-      {/* <Pagination className='my-6'>
+      <Pagination className='my-6'>
         <PaginationContent>
           <PaginationItem>
-            <PaginationPrevious href="#" />
+            <PaginationPrevious href="/allusers" />
           </PaginationItem>
           <PaginationItem>
-            <PaginationLink href="/allusers" isActive>1</PaginationLink>
+            <PaginationLink href="/allusers" >1</PaginationLink>
           </PaginationItem>
           <PaginationItem>
-            <PaginationLink href="/allusers/2">2</PaginationLink>
+            <PaginationLink href="/allusers/2" isActive>2</PaginationLink>
           </PaginationItem>
           <PaginationItem>
             <PaginationLink href="/allusers/3">3</PaginationLink>
@@ -120,14 +123,14 @@ const AllUsersPage = () => {
             <PaginationEllipsis />
           </PaginationItem>
           <PaginationItem>
-            <PaginationNext href="/allusers/2" />
+            <PaginationNext href="/allusers/3" />
           </PaginationItem>
         </PaginationContent>
-      </Pagination> */}
+      </Pagination>
 
 
     </section>
   )
 }
 
-export default AllUsersPage
+export default AllUsersTwo

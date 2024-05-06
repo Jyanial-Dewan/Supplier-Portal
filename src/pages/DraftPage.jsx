@@ -10,7 +10,7 @@ const DraftPage = () => {
     const {open} = context;
     
   return (
-    <section className="z-0">
+    <section className="pr-4 mb-6">
         <div className={open? 'pt-24 pl-24 max-w-[100vw] duration-1000 z-0': 'pt-24 pl-[16.5rem] max-w-[100vw] duration-1000 z-0'}>
             <h2 className="text-xl font-bold text-center">Notifications</h2>
             <div className="flex mt-6">

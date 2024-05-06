@@ -8,7 +8,7 @@ const ProfilePage = () => {
     const [show, setShow] = useState(false);
     console.log(token);
   return (
-    <section className={open? "pt-32 pl-[7rem] pr-4 duration-1000" : "pt-32 pl-[17.5rem] pr-4 duration-1000"} >
+    <section className={open? "pt-24 flex flex-col items-center pl-[7rem] pr-4 duration-1000" : "pt-24 flex flex-col items-center pl-[17.5rem] pr-4 duration-1000"} >
       <h2 className="font-semibold text-lg text-center mb-6">Profile</h2>
       <div className="flex gap-4">
         <div className="px-6 py-4 border border-gray-100 shadow-sm flex-shrink">

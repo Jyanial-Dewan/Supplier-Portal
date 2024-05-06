@@ -12,6 +12,11 @@ import LoginPage from "./pages/LoginPage"
 import ProfilePage from "./pages/ProfilePage"
 import Home from "./pages/Home"
 import ErrorPage from "./pages/ErrorPage"
+import AllUsersTwo from "./pages/AllUsersTwo"
+import AllUsersThree from "./pages/AllUsersThree"
+import AllUsersFour from "./pages/AllUsersFour"
+import SignUpPage from "./pages/SignUpPage"
+import IniviteUserPage from "./pages/IniviteUserPage"
 import { supabase } from "./client"
 import toast from "react-hot-toast"
 
@@ -69,14 +74,19 @@ const App = () => {
   return (
     <GlobalContext.Provider value={{open: open, setOpen: setOpen, allUsersData: allUsersData, deleteUser: deleteUser, fetchAllUsers: fetchAllUsers, token: token, setToken: setToken }}>
       <Routes>
+        <Route path="/signup" element={<SignUpPage/>}/>
         <Route path="/" element={token? <MainLayout/>: <LoginPage/>}>
           <Route path="/homepage" element={<Home/>}/>
           <Route path="/notification/inbox" element={<NotificationPage/>}/>
           <Route path="/notification/sent" element={<SentPage/>}/>
           <Route path="/notification/draft" element={<DraftPage/>}/>
           <Route path="/allusers" element={<AllUsersPage/>}/>
+          <Route path="/allusers/2" element={<AllUsersTwo/>}/>
+          <Route path="/allusers/3" element={<AllUsersThree/>}/>
+          <Route path="/allusers/4" element={<AllUsersFour/>}/>
           <Route path="/adduser" element={<AddUserPage/>}/>
           <Route path="/profile" element={<ProfilePage/>}/>
+          <Route path="/invite-user" element={<IniviteUserPage/>}/>
           <Route path="/updateuser/:id" element={<UpdateUserPage/>}/>
         </Route> 
         <Route path="*" element={<ErrorPage/>}/>
