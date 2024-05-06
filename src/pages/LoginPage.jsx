@@ -39,7 +39,7 @@ const LoginPage = () => {
     <div className="flex justify-center mt-20">
       <form className="w-[700px] px-6 py-4 mb-8 border border-gray-100 shadow-md flex flex-col justify-center items-center"
             onSubmit={handleSubmit}>
-        <h2 className="text-xl text-center">Add User</h2>
+        <h2 className="text-xl text-center">Log In</h2>
         <div className="flex flex-col gap-2 mb-4 w-full">
             <label htmlFor="firstName">Email</label>
             <input type="email"
