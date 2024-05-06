@@ -29,13 +29,13 @@ const Topbar = () => {
         <FiHome/> 
       </Link>
 
-      <div className="text-[1.5rem] ml-8 cursor-pointer p-2 hover:bg-black/10">
+      <Link to='/alert' className="text-[1.5rem] ml-8 cursor-pointer p-2 hover:bg-black/10">
         <FaRegBell/> 
-      </div>
+      </Link >
 
-      <div className="text-[1.5rem] ml-8 cursor-pointer p-2 hover:bg-black/10">
+      <Link to='/tasks' className="text-[1.5rem] ml-8 cursor-pointer p-2 hover:bg-black/10">
             <FaTasks/> 
-      </div>
+      </Link >
       <Link to={'/notification/inbox'} className="text-[1.5rem] mx-4 cursor-pointer p-2 hover:bg-black/10">
         <BsEnvelope/> 
       </Link>

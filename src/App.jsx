@@ -17,6 +17,11 @@ import AllUsersThree from "./pages/AllUsersThree"
 import AllUsersFour from "./pages/AllUsersFour"
 import SignUpPage from "./pages/SignUpPage"
 import IniviteUserPage from "./pages/IniviteUserPage"
+import AlertPage from "./pages/AlertPage"
+import TaskPage from "./pages/TaskPage"
+import DepartmentsPage from "./pages/DepartmentsPage"
+import CreateDepartment from "./pages/CreateDepartment"
+import UpadateDepartment from "./pages/UpadateDepartment"
 import { supabase } from "./client"
 import toast from "react-hot-toast"
 
@@ -24,6 +29,7 @@ const App = () => {
   const [token, setToken] = useState(false);
   const [open, setOpen] = useState(false);
   const [allUsersData, setAllUsersData] = useState([]);
+  const [departments, setDepartments] = useState([]);
   useEffect(() => {
     supabase.auth.getSession()
       .then(({ data: { token } }) => {
@@ -53,6 +59,19 @@ const App = () => {
       fetchAllUsers();
   }, []);
 
+  const fetchDepartments = async () => {
+       
+    let { data: departments, error } = await supabase
+                                        .from('departments')
+                                        .select('*')
+        setDepartments(departments);
+        console.log(error);
+  }
+
+  useEffect(()=>{
+    fetchDepartments()
+}, [])
+
   const deleteUser = async (userId)=> {
     
     const { error } = await supabase
@@ -69,18 +88,39 @@ const App = () => {
           fetchAllUsers();
   }
 
+  const deleteDepartment = async (userId)=> {
+    
+    const { error } = await supabase
+          .from('departments')
+          .delete()
+          .eq('user_id', userId)
+
+          if(error) {
+            console.log(error)
+            toast.error('there is a problem deleting department')
+          } else {
+            toast.success('department has been deleted successfully')
+          }
+          fetchDepartments();
+  }
+
   
 
   return (
-    <GlobalContext.Provider value={{open: open, setOpen: setOpen, allUsersData: allUsersData, deleteUser: deleteUser, fetchAllUsers: fetchAllUsers, token: token, setToken: setToken }}>
+    <GlobalContext.Provider value={{open: open, setOpen: setOpen, allUsersData: allUsersData, deleteUser: deleteUser, fetchAllUsers: fetchAllUsers, token: token, setToken: setToken, departments: departments, fetchDepartments: fetchDepartments, deleteDepartment: deleteDepartment }}>
       <Routes>
         <Route path="/signup" element={<SignUpPage/>}/>
         <Route path="/" element={token? <MainLayout/>: <LoginPage/>}>
           <Route path="/homepage" element={<Home/>}/>
+          <Route path="/alert" element={<AlertPage/>}/>
+          <Route path="/tasks" element={<TaskPage/>}/>
           <Route path="/notification/inbox" element={<NotificationPage/>}/>
           <Route path="/notification/sent" element={<SentPage/>}/>
           <Route path="/notification/draft" element={<DraftPage/>}/>
           <Route path="/allusers" element={<AllUsersPage/>}/>
+          <Route path="/departments" element={<DepartmentsPage/>}/>
+          <Route path="/create-department" element={<CreateDepartment/>}/>
+          <Route path="/update-department/:id" element={<UpadateDepartment/>}/>
           <Route path="/allusers/2" element={<AllUsersTwo/>}/>
           <Route path="/allusers/3" element={<AllUsersThree/>}/>
           <Route path="/allusers/4" element={<AllUsersFour/>}/>

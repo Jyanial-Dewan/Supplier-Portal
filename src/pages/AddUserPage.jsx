@@ -146,7 +146,7 @@ const AddUserPage = () => {
                    className="border-2 border-gray-100 px-4 h-12 rounded-md"/>
         </div>
 
-        <button type="submit" className="py-2 px-8 rounded-md bg-black text-white">Add User</button>
+        <button type="submit" className="py-2 px-8 rounded-md bg-black text-white">Submit</button>
       </form>
     </div>
   )
