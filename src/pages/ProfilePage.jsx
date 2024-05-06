@@ -19,22 +19,22 @@ const ProfilePage = () => {
         </div>
         
         <div className="px-6 py-4 border border-gray-100 shadow-sm">
-            <h2 className="text-center font-semibold text-lg mb-4">User ID QR Code</h2>
+            <h2 className="text-center font-semibold text-lg mb-4">User ID + Org_id QR Code</h2>
             <QRCode size={256}
                     style={{ height: "auto", maxWidth: "100%", width: "100%" }}
-                    value={token.user.id}
+                    value={token.user.id + token.user.user_metadata.org_id}
                     viewBox={`0 0 256 256`}/>
         </div>
 
         <div className="px-6 py-4 border border-gray-100 shadow-sm flex flex-col items-center">
             
-            <h2 className="text-center font-semibold text-lg mb-4">Token QR Code</h2>
+            <h2 className="text-center font-semibold text-lg mb-4">Token + Org_id QR Code</h2>
             <QRCode size={256}
                     style={{ height: "auto", maxWidth: "100%", width: "100%" }}
-                    value={token.access_token}
+                    value={token.access_token + token.user.user_metadata.org_id}
                     viewBox={`0 0 256 256`}
                     className={show? 'mt-0' : "hidden"}/>
-            <button className="bg-black text-white mt-4 p-3 rounded-sm" onClick={()=>setShow(!show)}>{show? "Hide": "Show" } Log In QR code</button>
+            <button className="bg-black text-white mt-4 px-6 py-2 rounded-sm" onClick={()=>setShow(!show)}>{show? "Hide": "Show" } Log In QR code</button>
         </div>
       </div>
     </section>
