@@ -61,7 +61,7 @@ const AllUsersPage = () => {
         <TableBody>
             {sortedAllusers.map((data)=>(
                 <>
-                <TableRow key={Math.floor(Math.random()*1000000)}>
+                <TableRow key={data.id}>
                     <TableCell  className="w-[100px]">{data.id}</TableCell>
                     <TableCell  className="w-[250px]">{data.user_id}</TableCell>
                     <TableCell  className="w-[100px]">{data.user_name}</TableCell>

@@ -22,6 +22,8 @@ import TaskPage from "./pages/TaskPage"
 import DepartmentsPage from "./pages/DepartmentsPage"
 import CreateDepartment from "./pages/CreateDepartment"
 import UpadateDepartment from "./pages/UpadateDepartment"
+import UserIdQrCode from "./pages/UserIdQrCode"
+import TokenQrCode from "./pages/TokenQrCode"
 import { supabase } from "./client"
 import toast from "react-hot-toast"
 
@@ -120,12 +122,14 @@ const App = () => {
           <Route path="/allusers" element={<AllUsersPage/>}/>
           <Route path="/departments" element={<DepartmentsPage/>}/>
           <Route path="/create-department" element={<CreateDepartment/>}/>
-          <Route path="/update-department/:id" element={<UpadateDepartment/>}/>
+          <Route path="/update-department/:user_id" element={<UpadateDepartment/>}/>
           <Route path="/allusers/2" element={<AllUsersTwo/>}/>
           <Route path="/allusers/3" element={<AllUsersThree/>}/>
           <Route path="/allusers/4" element={<AllUsersFour/>}/>
           <Route path="/adduser" element={<AddUserPage/>}/>
           <Route path="/profile" element={<ProfilePage/>}/>
+          <Route path="/user-qr-code" element={<UserIdQrCode/>}/>
+          <Route path="/token-qr-code" element={<TokenQrCode/>}/>
           <Route path="/invite-user" element={<IniviteUserPage/>}/>
           <Route path="/updateuser/:id" element={<UpdateUserPage/>}/>
         </Route> 

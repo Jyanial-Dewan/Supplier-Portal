@@ -16,22 +16,23 @@ const UpadateDepartment = () => {
     const [org_id_column_name, SetOrg_id_column_name] = useState('')
     const context = useContext(GlobalContext);
     const { fetchDepartments } = context;
-    const id = useParams()
+    const {user_id} = useParams()
     const navigate = useNavigate();
+    console.log(user_id)
 
     useEffect(()=>{
-        const fetchSingleUser = async () => {
+        const fetchSingleDepartment = async () => {
             let { data, error } = await supabase
                                     .from('departments')
                                     .select("*")
-                                    .eq('id', id.id)
+                                    .eq('user_id', user_id)
                                                         
             if(error) {
                 console.log(error)
             }
 
             if(data) {
-                
+                console.log(data)
                 setFirst_name(data[0].first_name)
                 setMiddle_name(data[0].middle_name)
                 setLast_name(data[0].last_name)
@@ -45,9 +46,9 @@ const UpadateDepartment = () => {
             }
         }
 
-        fetchSingleUser();
+        fetchSingleDepartment();
     
-    }, [id])
+    }, [user_id])
 
     const updateDepartment = async (e) => {
         e.preventDefault();
@@ -63,7 +64,7 @@ const UpadateDepartment = () => {
                                     org_type: org_type,
                                     org_id: org_id,
                                     org_id_column_name: org_id_column_name },)
-                                .eq('id', id.id)
+                                .eq('user_id', user_id)
                                 .select()
                 if(data) {
                     console.log(data)

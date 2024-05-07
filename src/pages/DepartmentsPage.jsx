@@ -23,7 +23,7 @@ const DepartmentsPage = () => {
     const { open, departments, deleteDepartment, fetchDepartments } = context;
     
     const sortedDepartments = departments.sort(function(a,b){
-        return a.id - b.id
+        return a.user_id - b.user_id
       })
 
   return (
@@ -49,7 +49,7 @@ const DepartmentsPage = () => {
         <TableBody>
             {sortedDepartments.map((data)=>(
                 <>
-                <TableRow key={Math.floor(Math.random()*1000000)}>
+                <TableRow key={data.id}>
                     <TableCell  className="w-[100px]">{data.id}</TableCell>
                     <TableCell  className="w-[250px]">{data.user_id}</TableCell>
                     <TableCell  className="w-[100px]">{data.user_name}</TableCell>
@@ -71,7 +71,7 @@ const DepartmentsPage = () => {
                         </div>
                       </PopoverContent>
                      </Popover>
-                      <Link to={`/update-department/${data.id}`}>
+                      <Link to={`/update-department/${data.user_id}`}>
                         <button className="bg-gray-200 px-4 py-2 rounded-md">Update</button>
                       </Link>
                     </TableCell>

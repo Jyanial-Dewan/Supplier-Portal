@@ -29,9 +29,9 @@ import toast from "react-hot-toast";
     useEffect(()=>{
         const fetchSingleUser = async () => {
             let { data, error } = await supabase
-                                                        .from('user_persons_view')
-                                                        .select("*")
-                                                        .eq('id', id.id)
+                                                .from('user_persons_view')
+                                                .select("*")
+                                                .eq('id', id.id)
                                                         
             if(error) {
                 console.log(error)
@@ -61,20 +61,20 @@ import toast from "react-hot-toast";
     const updateUser = async (e) => {
         e.preventDefault()
        
-    const { data, error } = await supabase.auth.updateUser({
-        email: email,
-        password: password,
-        data: { first_name: first_name,
-            middle_name: middle_name,
-            last_name: last_name,
-            user_name: user_name,
-            job_title: job_title,
-            org_id: org_id,
-            org_type: org_type,
-            org_id_table_name: org_id_table_name,
-            
-          }
-    })
+    const { data, error } = await supabase
+                .from('def_persons')
+                .update({
+                        first_name: first_name,
+                        middle_name: middle_name,
+                        last_name: last_name,
+                        user_name: user_name,
+                        job_title: job_title,
+                        org_id: org_id,
+                        org_type: org_type,
+                        org_id_table_name: org_id_table_name,
+                    })
+                .eq('id', id.id) 
+                .select()
   
                                 
             if(data){
