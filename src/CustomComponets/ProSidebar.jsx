@@ -8,6 +8,8 @@ import { FaRegUser } from "react-icons/fa";
 import { FiUsers } from "react-icons/fi";
 import { FiSend } from "react-icons/fi";
 import { LuFileSpreadsheet } from "react-icons/lu";
+import { IoIosPerson } from "react-icons/io";
+import { IoIosPersonAdd } from "react-icons/io";
 import GlobalContext from "@/context/GlobalContext";
 import { useContext } from "react";
 import { Link } from "react-router-dom";
@@ -35,6 +37,10 @@ const ProSidebar = () => {
             <SubMenu label="Departments" icon={<BiSpreadsheet className='text-3xl'/>}>
                 <MenuItem component={<Link to={'/departments'}/>} icon={<BiSpreadsheet className='text-3xl'/>}>Departments </MenuItem>
                 <MenuItem component={<Link to={'/create-department'}/>} icon={<LuFileSpreadsheet className='text-3xl'/>}>Create Department </MenuItem>
+            </SubMenu>
+            <SubMenu label="Employees" icon={<IoIosPerson className='text-3xl'/>}>
+                <MenuItem component={<Link to={'/employees'}/>} icon={<IoIosPerson className='text-3xl'/>}>Employees</MenuItem>
+                <MenuItem component={<Link to={'/add-employee'}/>} icon={<IoIosPersonAdd className='text-3xl'/>}>Add Employee </MenuItem>
             </SubMenu>
             <MenuItem component={<Link to={'/profile'}/>} icon={<FaRegUser className='text-2xl'/>}> {token.user.email} </MenuItem>
         </Menu>

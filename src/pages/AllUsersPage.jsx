@@ -8,10 +8,15 @@ import {
   } from "@/components/ui/table"
 import { useContext } from "react";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 // import {
 //   Pagination,
 //   PaginationContent,
@@ -77,15 +82,22 @@ const AllUsersPage = () => {
                     <TableCell  className="w-[100px]">{data.domain_name}</TableCell>
                     <TableCell  className="w-[100px]">{data.guid}</TableCell>
                     <TableCell  className="w-[200px] flex gap-2">
-                    <Popover>
-                      <PopoverTrigger className="bg-gray-200 px-4 py-2 rounded-md">Delete</PopoverTrigger>
-                      <PopoverContent className="text-center">Do you want to delete this user?
-                        <div className="flex justify-around mt-4">
-                          <img src={yes} onClick={()=> deleteUser(data.user_id)} className="w-12 cursor-pointer hover:scale-110"/>
-                          <img src={no} onClick={()=>fetchAllUsers()} className="w-12 cursor-pointer hover:scale-110"/>
-                        </div>
-                      </PopoverContent>
-                    </Popover>
+                    <AlertDialog>
+                        <AlertDialogTrigger className="bg-gray-200 px-4 py-2 rounded-md">Delete</AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>
+                              <img className="w-12 hover:scale-110" src={no} />
+                            </AlertDialogCancel>
+                            <AlertDialogAction>
+                            <img className="w-12 hover:scale-110"  src={yes} onClick={()=>deleteUser(data.user_id)} />
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                       <Link to={`/updateuser/${data.id}`}>
                         <button className="bg-gray-200 px-4 py-2 rounded-md">Update</button>
                       </Link>

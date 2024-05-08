@@ -23,24 +23,32 @@ import { Link } from "react-router-dom";
 import yes from "../images/yes.png"
 import no from "../images/error.png"
 
-const DepartmentsPage = () => {
+const EmployeesPage = () => {
     const context = useContext(GlobalContext);
-    const { open, departments, deleteDepartment } = context;
+    const { open, employees, deleteEmployee, } = context;
    
-    const sortedDepartments = departments.sort(function(a,b){
-        return a.department_id - b.department_id
+    const sortedDepartments = employees.sort(function(a,b){
+        return a.user_id - b.user_id
       });
 
 
   return (
     <section className={open? "pt-24 pl-[7rem] pr-4 duration-1000" : "pt-24 pl-[17.5rem] pr-4 duration-1000"}>
-        <h2 className="text-2xl font-bold text-center mb-6 p-1 border border-gray-100">Departments</h2>
+        <h2 className="text-2xl font-bold text-center mb-6 p-1 border border-gray-100">Employees</h2>
       <Table className="border border-gray-100 z-0 bg-transparent">
         <TableHeader className="bg-gray-100">
             <TableRow>
-                <TableHead className="w-[105px]">Department ID</TableHead>
-                <TableHead className="w-[250px]">Department Name</TableHead>
-                
+                <TableHead className="w-[100px]">ID</TableHead>
+                <TableHead className="w-[250px]">User ID</TableHead>
+                <TableHead className="w-[100px]">User Name</TableHead>
+                <TableHead className="w-[100px]">First Name</TableHead>
+                <TableHead className="w-[100px]">Middle Name</TableHead>
+                <TableHead className="w-[100px]">Last Name</TableHead>
+                <TableHead className="w-[150px]">Email</TableHead>
+                <TableHead className="w-[50px]">Job Title</TableHead>
+                <TableHead className="w-[100px]">Organization Type</TableHead>
+                <TableHead className="w-[100px]">Organization ID</TableHead>
+                <TableHead className="w-[100px]">Organization ID Column Name</TableHead>
                 <TableHead className="w-[200px]">Action</TableHead>
             </TableRow>
         </TableHeader>
@@ -48,9 +56,17 @@ const DepartmentsPage = () => {
             {sortedDepartments.map((data)=>(
                 <>
                 <TableRow key={data.id}>
-                    <TableCell  className="w-[150px]">{data.department_id}</TableCell>
-                    <TableCell  className="w-[250px]">{data.department_name}</TableCell>
-                    
+                    <TableCell  className="w-[100px]">{data.id}</TableCell>
+                    <TableCell  className="w-[250px]">{data.user_id}</TableCell>
+                    <TableCell  className="w-[100px]">{data.user_name}</TableCell>
+                    <TableCell  className="w-[100px]">{data.first_name}</TableCell>
+                    <TableCell  className="w-[100px]">{data.middle_name}</TableCell>
+                    <TableCell  className="w-[100px]">{data.last_name}</TableCell>
+                    <TableCell  className="w-[150px]">{data.email}</TableCell>
+                    <TableCell  className="w-[50px]">{data.job_title}</TableCell>
+                    <TableCell  className="w-[100px]">{data.org_type}</TableCell>
+                    <TableCell  className="w-[100px]">{data.org_id}</TableCell>
+                    <TableCell  className="w-[100px]">{data.org_id_column_name}</TableCell>
                     <TableCell  className="w-[200px] flex gap-2">
                       <AlertDialog>
                         <AlertDialogTrigger className="bg-gray-200 px-4 py-2 rounded-md">Delete</AlertDialogTrigger>
@@ -63,13 +79,13 @@ const DepartmentsPage = () => {
                               <img className="w-12 hover:scale-110" src={no} />
                             </AlertDialogCancel>
                             <AlertDialogAction>
-                            <img className="w-12 hover:scale-110"  src={yes} onClick={()=>deleteDepartment(data.department_id)} />
+                            <img className="w-12 hover:scale-110"  src={yes} onClick={()=>deleteEmployee(data.user_id)} />
                             </AlertDialogAction>
                           </AlertDialogFooter>
                         </AlertDialogContent>
                       </AlertDialog>
 
-                      <Link to={`/update-department/${data.department_id}`}>
+                      <Link to={`/update-employee/${data.user_id}`}>
                         <button className="bg-gray-200 px-4 py-2 rounded-md">Update</button>
                       </Link>
                     </TableCell>
@@ -83,4 +99,4 @@ const DepartmentsPage = () => {
   )
 }
 
-export default DepartmentsPage
+export default EmployeesPage

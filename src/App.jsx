@@ -24,6 +24,9 @@ import CreateDepartment from "./pages/CreateDepartment"
 import UpadateDepartment from "./pages/UpadateDepartment"
 import UserIdQrCode from "./pages/UserIdQrCode"
 import TokenQrCode from "./pages/TokenQrCode"
+import EmployeesPage from "./pages/EmployeesPage"
+import AddEmployee from "./pages/AddEmployeePage"
+import UpadateEmployee from "./pages/UpdateEmployee"
 import { supabase } from "./client"
 import toast from "react-hot-toast"
 
@@ -31,6 +34,7 @@ const App = () => {
   const [token, setToken] = useState(false);
   const [open, setOpen] = useState(false);
   const [allUsersData, setAllUsersData] = useState([]);
+  const [employees, setEmployees] = useState([]);
   const [departments, setDepartments] = useState([]);
   useEffect(() => {
     supabase.auth.getSession()
@@ -61,19 +65,6 @@ const App = () => {
       fetchAllUsers();
   }, []);
 
-  const fetchDepartments = async () => {
-       
-    let { data: departments, error } = await supabase
-                                        .from('departments')
-                                        .select('*')
-        setDepartments(departments);
-        console.log(error);
-  }
-
-  useEffect(()=>{
-    fetchDepartments()
-}, [])
-
   const deleteUser = async (userId)=> {
     
     const { error } = await supabase
@@ -90,12 +81,54 @@ const App = () => {
           fetchAllUsers();
   }
 
-  const deleteDepartment = async (userId)=> {
+  const fetchEmployees = async () => {
+       
+    let { data: employees, error } = await supabase
+                                        .from('employees')
+                                        .select('*')
+        setEmployees(employees);
+        console.log(error);
+  }
+
+  useEffect(()=>{
+    fetchEmployees()
+}, [])
+
+  const deleteEmployee = async (userId)=> {
+    
+    const { error } = await supabase
+          .from('employees')
+          .delete()
+          .eq('user_id', userId)
+
+          if(error) {
+            console.log(error)
+            toast.error('there is a problem deleting employee')
+          } else {
+            toast.success('employee has been deleted successfully')
+          }
+          fetchEmployees();
+  }
+
+  const fetchDepartments = async () => {
+       
+    let { data: departments, error } = await supabase
+                                        .from('departments')
+                                        .select('*')
+        setDepartments(departments);
+        console.log(error);
+  }
+
+  useEffect(()=>{
+    fetchDepartments()
+}, [])
+
+  const deleteDepartment = async (departmentId)=> {
     
     const { error } = await supabase
           .from('departments')
           .delete()
-          .eq('user_id', userId)
+          .eq('department_id', departmentId)
 
           if(error) {
             console.log(error)
@@ -109,7 +142,7 @@ const App = () => {
   
 
   return (
-    <GlobalContext.Provider value={{open: open, setOpen: setOpen, allUsersData: allUsersData, deleteUser: deleteUser, fetchAllUsers: fetchAllUsers, token: token, setToken: setToken, departments: departments, fetchDepartments: fetchDepartments, deleteDepartment: deleteDepartment }}>
+    <GlobalContext.Provider value={{open: open, setOpen: setOpen, allUsersData: allUsersData, deleteUser: deleteUser, fetchAllUsers: fetchAllUsers, token: token, setToken: setToken, employees: employees, fetchEmployees: fetchEmployees, deleteEmployee: deleteEmployee, fetchDepartments: fetchDepartments, departments: departments, deleteDepartment: deleteDepartment }}>
       <Routes>
         <Route path="/signup" element={<SignUpPage/>}/>
         <Route path="/" element={token? <MainLayout/>: <LoginPage/>}>
@@ -120,9 +153,12 @@ const App = () => {
           <Route path="/notification/sent" element={<SentPage/>}/>
           <Route path="/notification/draft" element={<DraftPage/>}/>
           <Route path="/allusers" element={<AllUsersPage/>}/>
+          <Route path="/employees" element={<EmployeesPage/>}/>
+          <Route path="/add-employee" element={<AddEmployee/>}/>
+          <Route path="/update-employee/:user_id" element={<UpadateEmployee/>}/>
           <Route path="/departments" element={<DepartmentsPage/>}/>
           <Route path="/create-department" element={<CreateDepartment/>}/>
-          <Route path="/update-department/:user_id" element={<UpadateDepartment/>}/>
+          <Route path="/update-department/:department_id" element={<UpadateDepartment/>}/>
           <Route path="/allusers/2" element={<AllUsersTwo/>}/>
           <Route path="/allusers/3" element={<AllUsersThree/>}/>
           <Route path="/allusers/4" element={<AllUsersFour/>}/>
