@@ -34,7 +34,7 @@ import no from "../images/error.png"
  
 const AllUsersPage = () => {
   const context = useContext(GlobalContext)
-  const {open, allUsersData, deleteUser, fetchAllUsers} = context
+  const {open, allUsersData, deleteUser} = context
 
   const sortedAllusers = allUsersData.sort(function(a,b){
     return a.user_id - b.user_id

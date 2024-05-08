@@ -13,18 +13,20 @@ const AddEmployee = () => {
      const [job_title, setJob_title] = useState('')
      const [org_type, setOrg_type] = useState('')
      const [org_id, setOrg_id] = useState('')
-     const [org_id_column_name, SetOrg_id_column_name] = useState('')
+     const [org_id_column_name, setOrg_id_column_name] = useState('')
+     
     
      const navigate = useNavigate()
      const context = useContext(GlobalContext)
-     const { fetchDepartments } = context
+     const { fetchEmployees } = context
 
      const addEmployee = async (e) => {
         e.preventDefault()
         const { data, error } = await supabase
                                 .from('employees')
                                 .insert(
-                                        { user_name: user_name, 
+                                        { //id: Math.floor(Math.random() * 100000),
+                                          user_name: user_name, 
                                           first_name: first_name,
                                           middle_name: middle_name,
                                           last_name: last_name,
@@ -46,7 +48,7 @@ const AddEmployee = () => {
                     toast.success('employee has been added successfully')
                 }
 
-                fetchDepartments();
+                fetchEmployees();
                 navigate('/employees')
 
 
@@ -58,6 +60,7 @@ const AddEmployee = () => {
       <form className="w-[700px] px-6 py-4 mb-8 border border-gray-100 shadow-md flex flex-col justify-center items-center"
            onSubmit={addEmployee}>
         <h2 className="text-xl text-center">Add Employee</h2>
+        
         <div className="flex flex-col gap-2 mb-4 w-full">
             <label htmlFor="firstName">First Name</label>
             <input type="text"
@@ -136,7 +139,7 @@ const AddEmployee = () => {
             <input type="text"
                    value={org_id_column_name}
                    name="last_name"
-                   onChange={(e)=>SetOrg_id_column_name(e.target.value)}
+                   onChange={(e)=>setOrg_id_column_name(e.target.value)}
                    className="border-2 border-gray-100 px-4 h-12 rounded-md"/>
         </div>
 
