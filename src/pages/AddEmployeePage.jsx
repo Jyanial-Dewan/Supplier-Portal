@@ -22,7 +22,7 @@ const AddEmployee = () => {
      const addEmployee = async (e) => {
         e.preventDefault()
         const { data, error } = await supabase
-                                .from('departments')
+                                .from('employees')
                                 .insert(
                                         { user_name: user_name, 
                                           first_name: first_name,
