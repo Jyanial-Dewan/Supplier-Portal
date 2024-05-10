@@ -94,12 +94,12 @@ const App = () => {
     fetchEmployees()
 }, [])
 
-  const deleteEmployee = async (userId)=> {
+  const deleteEmployee = async (employeeID)=> {
     
     const { error } = await supabase
           .from('employees')
           .delete()
-          .eq('user_id', userId)
+          .eq('employee_id', employeeID)
 
           if(error) {
             console.log(error)
@@ -155,7 +155,7 @@ const App = () => {
           <Route path="/allusers" element={<AllUsersPage/>}/>
           <Route path="/employees" element={<EmployeesPage/>}/>
           <Route path="/add-employee" element={<AddEmployee/>}/>
-          <Route path="/update-employee/:user_id" element={<UpadateEmployee/>}/>
+          <Route path="/update-employee/:employee_id" element={<UpadateEmployee/>}/>
           <Route path="/departments" element={<DepartmentsPage/>}/>
           <Route path="/create-department" element={<CreateDepartment/>}/>
           <Route path="/update-department/:department_id" element={<UpadateDepartment/>}/>
