@@ -71,8 +71,6 @@ const UpadateDepartment = () => {
               <label htmlFor="firstName">Department ID</label>
               <input type="text"
                      value={department_id}
-                     
-                     onChange={(e)=>setDepartment_id(e.target.value)}
                      className="border-2 border-gray-100 px-4 h-12 rounded-md"/>
           </div>
   
@@ -80,7 +78,6 @@ const UpadateDepartment = () => {
               <label htmlFor="middleName">Department Name</label>
               <input type="text"
                      value={department_name}
-                     name="middle_name"
                      onChange={(e)=>setDepartment_name(e.target.value)}
                      className="border-2 border-gray-100 px-4 h-12 rounded-md"/>
           </div>

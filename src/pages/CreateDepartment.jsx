@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 
 const CreateDepartment = () => {
     const [department_id, setDepartment_id] = useState('')
-     const [department_name, setDepartment_name] = useState('')
+    const [department_name, setDepartment_name] = useState('')
      
     
      const navigate = useNavigate()
@@ -36,10 +36,7 @@ const CreateDepartment = () => {
 
                 fetchDepartments();
                 navigate('/departments')
-
-
-
-     }
+    }
   return (
     <div className='pt-24 pl-20 flex justify-center items-center'>
         
@@ -50,7 +47,6 @@ const CreateDepartment = () => {
             <label htmlFor="firstName">Department ID</label>
             <input type="text"
                    value={department_id}
-                   placeholder="First Name"
                    onChange={(e)=>setDepartment_id(e.target.value)}
                    className="border-2 border-gray-100 px-4 h-12 rounded-md"/>
         </div>

@@ -1,5 +1,5 @@
 import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
-import logo from "../images/Supplier-Portal.jpg"
+
 import { IoMenu } from "react-icons/io5";
 import { IoMdClose } from "react-icons/io";
 import { LuUserPlus } from "react-icons/lu";
@@ -23,7 +23,7 @@ const ProSidebar = () => {
     }
   return (
     <Sidebar collapsed={open} transitionDuration={1000} style={{ display: 'flex', flexDirection: 'column', height: '100vh', position: 'fixed', paddingTop: '4rem', scrollBehavior: 'none', zIndex: '20'}} >
-        <img src={logo} alt="" />
+        
         {open ? <IoMenu className='text-4xl p-2 duration-500 bg-gray-100 rounded-md flex justify-center mx-auto my-2 cursor-pointer hover:rotate-[360deg]'
                 onClick={handleClick}/> :
         <IoMdClose className='text-4xl p-2 duration-500 bg-gray-100 rounded-md flex justify-center mx-auto my-2 cursor-pointer hover:rotate-[360deg]'

@@ -94,21 +94,21 @@ const App = () => {
     fetchEmployees()
 }, [])
 
-  const deleteEmployee = async (employeeID)=> {
+const deleteEmployee = async (employeeID)=> {
     
-    const { error } = await supabase
-          .from('employees')
-          .delete()
-          .eq('employee_id', employeeID)
+  const { error } = await supabase
+        .from('employees')
+        .delete()
+        .eq('employee_id', employeeID)
 
-          if(error) {
-            console.log(error)
-            toast.error('there is a problem deleting employee')
-          } else {
-            toast.success('employee has been deleted successfully')
-          }
-          fetchEmployees();
-  }
+        if(error) {
+          console.log(error)
+          toast.error('there is a problem deleting employee')
+        } else {
+          toast.success('employee has been deleted successfully')
+        }
+        fetchEmployees();
+}
 
   const fetchDepartments = async () => {
        
