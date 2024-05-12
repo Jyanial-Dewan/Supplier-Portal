@@ -187,7 +187,7 @@ const EmployeesPage = () => {
           setLast_name('')
           setEmail('')
           setJob_title('')
-          setEmp_Department_id('')
+          setEmp_Department_id('101')
           setShowAddEmployee(!showAddEmployee)
           fetchEmployees()
           setNewEmployees(employees)
@@ -200,17 +200,17 @@ const EmployeesPage = () => {
       setLast_name('')
       setEmail('')
       setJob_title('')
-      setEmp_Department_id('')
+      setEmp_Department_id('101')
       setShowAddEmployee(!showAddEmployee)
     }
 
     const cancelUpdateEmployee = ()=> {
       setEmployee_name('')
-  setFirst_name('')
-  setLast_name('')
-  setEmail('')
-  setJob_title('')
-  setEmp_Department_id('')
+      setFirst_name('')
+      setLast_name('')
+      setEmail('')
+      setJob_title('')
+      setEmp_Department_id('101')
       setShowUpdateEmployee(!showUpdateEmployee)
     }
 
@@ -268,7 +268,7 @@ const EmployeesPage = () => {
             setLast_name('')
             setEmail('')
             setJob_title('')
-            setEmp_Department_id('')
+            setEmp_Department_id('101')
             setShowUpdateEmployee(!showUpdateEmployee)
             fetchEmployees()
             setNewEmployees(employees)
