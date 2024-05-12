@@ -290,6 +290,8 @@ const deleteEmployee = async (employeeID)=> {
           toast.success('employee has been deleted successfully')
         }
         fetchEmployees();
+        setNewEmployees(employees)
+        setIsChecked(false)
         
 }
    
