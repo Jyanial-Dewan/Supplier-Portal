@@ -10,6 +10,9 @@ const WidgetPage = () => {
     const [newEmployees, setNewEmployees] = useState(employees)
     const [newDepartments, setNewDepartments] = useState(departments)
     const [isClicked, setIsClicked] = useState('');
+    const [isMinimized, setIsMinimized] = useState([])
+    const [isClosed, setIsClosed] = useState([])
+    
     
     const sortedEmployees = employees.sort(function(a,b){
         return a.employee_id - b.employee_id
@@ -23,6 +26,19 @@ const WidgetPage = () => {
         setNewDepartments(newDepartmentList)
         setIsClicked(depID)
        }
+
+    const handleMinimize = (empId) => {
+        setIsMinimized((prev)=> [...prev, empId])
+    }
+    
+    const handleDiMinimize = (id)=> {
+        const array = isMinimized.filter((i) => i !== id)
+        setIsMinimized(array)
+    }
+
+    const handleClose = (id)=>{
+        setIsClosed((prev)=> [...prev, id])
+    }
 
   return (
     <div className={open? "pt-24 pl-[7rem] pr-4 duration-1000" : "pt-24 pl-[17.5rem] pr-4 duration-1000"}>
@@ -40,9 +56,11 @@ const WidgetPage = () => {
 
         <div className="w-[90%] mx-auto bg-blue h-[2px] my-8"></div>
 
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col items-center gap-6">
             {isClicked? newEmployees.map((emp)=> (
-                <Widget key={emp.employee_id} emp={emp}/> 
+                <div key={emp.employee_id} className={isClosed.includes(emp.employee_id) ? "scale-0 duration-500" : "scale-100 duration-500"} >
+                    <Widget emp={emp} handleMinimize={handleMinimize} isMinimized={isMinimized} handleDiMinimize={handleDiMinimize} handleClose={handleClose}/>
+                </div> 
             )): ''}
         </div>
       </div>
