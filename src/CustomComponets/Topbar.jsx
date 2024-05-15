@@ -25,9 +25,9 @@ const Topbar = () => {
     
   }
   return (
-    <div className="fixed z-50 bg-white h-12 w-full shadow-xl flex justify-between items-center">
+    <div className="fixed z-50 bg-white h-16 w-full shadow-xl flex justify-between items-center">
       <div>
-        <img src={logo} alt='Logo' className="w-16" />
+        <img src={logo} alt='Logo' className="w-20" />
       </div>
       <div className="flex justify-end items-center">
         <Link to='/homepage' className="text-[1.5rem] cursor-pointer p-2 hover:bg-black/10">

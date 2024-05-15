@@ -90,6 +90,7 @@ const EmployeesPage = () => {
       setNewEmployees(newEmployeesList)
       setIsChecked(depID)
       setEmp_Department_name(depID)
+      setEmp_Department_id(depID)
      }
 
     const createDepartment = async (e) => {
@@ -200,7 +201,7 @@ const EmployeesPage = () => {
       setLast_name('')
       setEmail('')
       setJob_title('')
-      setEmp_Department_id('101')
+      //setEmp_Department_id('101')
       setShowAddEmployee(!showAddEmployee)
     }
 
@@ -210,7 +211,7 @@ const EmployeesPage = () => {
       setLast_name('')
       setEmail('')
       setJob_title('')
-      setEmp_Department_id('101')
+      //setEmp_Department_id('101')
       setShowUpdateEmployee(!showUpdateEmployee)
     }
 
@@ -298,7 +299,7 @@ const deleteEmployee = async (employeeID)=> {
 return (
     <section className={open? "pt-16 pl-[7rem] pr-4 duration-1000" : "pt-16 pl-[17.5rem] pr-4 duration-1000"}>
      
-        <div className="max-h-[220px] overflow-auto flex-grow">
+      <div className="max-h-[220px] overflow-auto flex-grow mb-6">
           <h2 className="text-xl font-bold text-center mb-4">Departments</h2>
           <Table className="border border-gray-100 z-0 bg-transparent">
             <TableHeader className="bg-gray-100">
@@ -401,15 +402,16 @@ return (
             ))}
             </TableBody>
           </Table>
-        </div>
+      </div>
         
-      
-      <div className="mt-6 max-h-[400px] overflow-auto">
+      <div className="bg-black w-[100%] h-[2px] mx-auto"></div>
+
+      <div className="mt-4 max-h-[280px] overflow-auto">
         <h2 className="text-xl font-bold text-center mb-4">{emp_department_name} Employees</h2>
         <Table className="border border-gray-100 z-0">
           <TableHeader className="bg-gray-100">
             <TableRow>
-                <TableHead className="w-[100px]">Employee ID</TableHead>
+                <TableHead className="w-[50px]">ID</TableHead>
                 <TableHead className="w-[100px]">Employee Name</TableHead>
                 <TableHead className="w-[100px]">First Name</TableHead>
                 <TableHead className="w-[100px]">Last Name</TableHead>
@@ -541,7 +543,7 @@ return (
             {isChecked ? newEmployees.map((data)=>(
                 <>
                 <TableRow key={data.id}>
-                    <TableCell  className="w-[100px]">{data.employee_id}</TableCell>
+                    <TableCell  className="w-[50px]">{data.employee_id}</TableCell>
                     <TableCell  className="w-[100px]">{data.employee_name}</TableCell>
                     <TableCell  className="w-[100px]">{data.first_name}</TableCell>
                     <TableCell  className="w-[100px]">{data.last_name}</TableCell>

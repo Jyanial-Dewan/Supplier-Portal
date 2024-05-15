@@ -27,6 +27,8 @@ import TokenQrCode from "./pages/TokenQrCode"
 import EmployeesPage from "./pages/EmployeesPage"
 import AddEmployee from "./pages/AddEmployeePage"
 import UpadateEmployee from "./pages/UpdateEmployee"
+import DragAndDrop from "./pages/DragAndDrop"
+import WidgetPage from "./pages/WidgetPage"
 import { supabase } from "./client"
 import toast from "react-hot-toast"
 
@@ -168,6 +170,8 @@ const deleteEmployee = async (employeeID)=> {
           <Route path="/token-qr-code" element={<TokenQrCode/>}/>
           <Route path="/invite-user" element={<IniviteUserPage/>}/>
           <Route path="/updateuser/:id" element={<UpdateUserPage/>}/>
+          <Route path="/dragndrop" element={<DragAndDrop/>}/>
+          <Route path="/widget" element={<WidgetPage/>}/>
         </Route> 
         <Route path="*" element={<ErrorPage/>}/>
       </Routes>
