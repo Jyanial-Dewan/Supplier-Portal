@@ -1,23 +1,33 @@
 import GlobalContext from "@/context/GlobalContext"
 import { useContext, useState } from "react"
-import Widget from "@/CustomComponets/Widget"
 import DepartmentWidget from "@/CustomComponets/DepartmentWidget"
-
+import Widget from "@/CustomComponets/Widget";
+import { supabase } from "@/client";
+import toast from "react-hot-toast";
+import { AiOutlineSave } from "react-icons/ai";
+import { AiOutlineClose } from "react-icons/ai";
+import { BiAddToQueue } from "react-icons/bi";
 
 const WidgetPage = () => {
     const context = useContext(GlobalContext)
-    const { open, employees, departments } = context
+    const { open, employees, departments, fetchEmployees } = context
     const [newEmployees, setNewEmployees] = useState(employees)
     const [newDepartments, setNewDepartments] = useState(departments)
     const [isClicked, setIsClicked] = useState('');
     const [isMinimized, setIsMinimized] = useState([])
-    const [isClosed, setIsClosed] = useState([])
+    const [isDeleted, setIsDeleted] = useState([])
+    const [employee_id, setEmployee_id] = useState('Auto')
+    const [email, setEmail] = useState('')
+    const [employee_name, setEmployee_name] = useState('')
+    const [emp_department_id, setEmp_Department_id] = useState('101')
+    const [job_title, setJob_title] = useState('')
+    const [showAddEmployee, setShowAddEmployee] = useState(false)
+    console.log("isminized", isMinimized)
     
     
     const sortedEmployees = employees.sort(function(a,b){
         return a.employee_id - b.employee_id
       });
-
 
     const filterEmplpoyee = (depID)=> {
         const newEmployeesList = sortedEmployees.filter((employee)=> employee.department_id === depID);
@@ -36,9 +46,59 @@ const WidgetPage = () => {
         setIsMinimized(array)
     }
 
-    const handleClose = (id)=>{
-        setIsClosed((prev)=> [...prev, id])
+    const deleteEmployee = async (employeeID)=> {
+    
+        const { error } = await supabase
+              .from('employees')
+              .delete()
+              .eq('employee_id', employeeID)
+      
+              if(error) {
+                console.log(error)
+                toast.error('there is a problem deleting employee')
+              } else {
+                toast.success('employee has been deleted successfully')
+                setIsDeleted((prev) => [...prev, employeeID])
+              }
+      }
+
+    const handleCancel = ()=> {
+        setShowAddEmployee(!showAddEmployee)
+        setEmp_Department_id('101')
     }
+
+    const addEmployee = async (e) => {
+        e.preventDefault()
+        const { data, error } = await supabase
+                            .from('employees')
+                            .insert(
+                                    { 
+                                      employee_name: employee_name, 
+                                      email: email,
+                                      job_title: job_title,
+                                      department_id: emp_department_id,
+                                      },
+                                    )
+                            .select()
+            if(data) {
+                console.log(data)
+            }
+  
+            if(error) {
+                console.log(error)
+                toast.error('there is a problem adding employee')
+            } else {
+                toast.success('employee has been added successfully')
+            }
+                setEmployee_name('')
+                setEmail('')
+                setJob_title('')
+                fetchEmployees()
+                setNewEmployees(employees)
+                setEmp_Department_id('101')
+                setShowAddEmployee(!showAddEmployee)
+                setIsClicked('')
+  }
 
   return (
     <div className={open? "pt-24 pl-[7rem] pr-4 duration-1000" : "pt-24 pl-[17.5rem] pr-4 duration-1000"}>
@@ -57,11 +117,66 @@ const WidgetPage = () => {
         <div className="w-[90%] mx-auto bg-blue h-[2px] my-8"></div>
 
         <div className="flex flex-col items-center gap-6">
+            <div className="w-[700px] flex flex-col gap-4 items-end">
+                <BiAddToQueue onClick={()=>setShowAddEmployee(!showAddEmployee)} className="text-2xl hover:scale-110 cursor-pointer mx-4"/>
+                <div className={showAddEmployee? "w-[700px] bg-gradient-to-b from-blue to-spblue text-otherblue shadow-lg p-4 rounded-lg": 'hidden'}>
+                    <div className="flex justify-end gap-2">
+                        <AiOutlineSave type="submit" onClick={addEmployee} className="text-2xl hover:scale-110 cursor-pointer"/>
+                        <AiOutlineClose onClick={handleCancel} className="text-2xl hover:scale-110 cursor-pointer"/>
+                    </div>
+                    <div>
+                        <label className="font-bold" htmlFor="employeeName">Employee Name </label>
+                        <input type="text"
+                               value={employee_name}
+                               onChange={(e)=> setEmployee_name(e.target.value)}
+                               className="bg-transparent border-2 border-otherblue/50 outline-none w-[200px] rounded-md pl-1" />
+                    </div>
+                    <div className="flex justify-between mt-4">
+                            <div className="flex flex-col gap-2">
+                                <label className="font-bold" htmlFor="employeeid">Employee Id</label>
+                                <input type="text"
+                                        value={employee_id}
+                                        className="bg-transparent border-2 border-otherblue/50 outline-none w-[100px] rounded-md pl-1" />
+                            </div>
+
+                            <div className="flex flex-col gap-2">
+                                <label className="font-bold" htmlFor="jobtitle">Job Title</label>
+                                <input type="text"
+                                value={job_title}
+                                onChange={(e)=>setJob_title(e.target.value)}
+                                className="bg-transparent border-2 border-otherblue/50 outline-none w-[200px] rounded-md pl-1"/>
+                            </div>
+        
+                            <div className="flex flex-col gap-2">
+                                <label className="font-bold" htmlFor="employeeid">Email</label>
+                                <input type="email"
+                                value={email}
+                                onChange={(e)=>setEmail(e.target.value)}
+                                className="bg-transparent border-2 border-otherblue/50 outline-none w-[180px] rounded-md pl-1"/>
+                            </div>
+                            
+                            <div className="flex flex-col gap-2">
+                                <label className="font-bold" htmlFor="employeeid">Department Id</label>
+                                <select className="bg-transparent border-2 border-otherblue/50 outline-none w-[100px] rounded-md"
+                                        value={emp_department_id}
+                                        onChange={(e)=>setEmp_Department_id(e.target.value)} >
+                                    {departments.map((dep)=> (
+                                        <option key={dep.department_id} value={dep.department_id}>{`${dep.department_id}(${dep.department_name})`}</option>
+                                    ))}
+                                </select>
+                            </div>
+                    </div>
+                </div>
+            </div>
             {isClicked? newEmployees.map((emp)=> (
-                <div key={emp.employee_id} className={isClosed.includes(emp.employee_id) ? "scale-0 duration-500" : "scale-100 duration-500"} >
-                    <Widget emp={emp} handleMinimize={handleMinimize} isMinimized={isMinimized} handleDiMinimize={handleDiMinimize} handleClose={handleClose}/>
-                </div> 
-            )): ''}
+                <div key={emp.employee_id} className={isDeleted.includes(emp.employee_id) ? 'hidden' : 'p-0'}>
+                    <Widget emp={emp} isMinimized={isMinimized} handleMinimize={handleMinimize} handleDiMinimize={handleDiMinimize} deleteEmployee={deleteEmployee}/>
+                </div>
+            )): employees.map((emp)=> (
+                <div key={emp.employee_id} className={isDeleted.includes(emp.employee_id) ? 'hidden' : 'p-0'}>
+                    <Widget emp={emp} isMinimized={isMinimized} handleMinimize={handleMinimize} handleDiMinimize={handleDiMinimize} deleteEmployee={deleteEmployee}/>
+                </div>
+            ))}
         </div>
       </div>
     </div>

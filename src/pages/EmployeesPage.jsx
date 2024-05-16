@@ -293,7 +293,6 @@ const deleteEmployee = async (employeeID)=> {
         fetchEmployees();
         setNewEmployees(employees)
         setIsChecked(false)
-        
 }
    
 return (
