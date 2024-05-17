@@ -1,9 +1,10 @@
 
-
 const TaskPage = () => {
+  
+ 
   return (
-    <div className="pt-40 pl-80">
-      Task Page
+    <div className='pt-40 pl-80'>
+      hello
     </div>
   )
 }

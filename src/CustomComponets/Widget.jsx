@@ -1,10 +1,11 @@
 import { FiMinus } from "react-icons/fi";
 import { AiOutlineDelete } from "react-icons/ai";
 import { MdOutlineOpenInFull } from "react-icons/md";
-import { AiOutlineSave } from "react-icons/ai";
+import { RiDragDropLine } from "react-icons/ri";
 import yes from "../images/yes.png"
 import no from "../images/error.png"
-import { useState } from "react";
+import { useContext } from "react";
+import WidgetContext from "@/context/WidgetContext";
 
 import {
     AlertDialog,
@@ -16,21 +17,38 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
   } from "@/components/ui/alert-dialog"
+import { useSortable } from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
 
-const Widget = ({emp, isMinimized, handleMinimize, handleDiMinimize, deleteEmployee }) => {
-    // const [employee_id, setEmployee_id] = useState('')
-    // const [email, setEmail] = useState('')
-    // const [employee_name, setEmployee_name] = useState('')
-    // const [emp_department_id, setEmp_Department_id] = useState('101')
+const Widget = (props) => {
+    const emp = props.id
+    const context = useContext(WidgetContext);
+    const {handleMinimize, isMinimized, handleDiMinimize, deleteEmployee} = context;
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition
+    } = useSortable({id: props.id});
+
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition
+    }
 
   return (
-    <div className={isMinimized.includes(emp.employee_id) ? "w-[500px] bg-gradient-to-b from-blue to-spblue rounded-xl text-otherblue shadow-lg p-4": "w-[700px] bg-gradient-to-b from-blue to-spblue rounded-xl text-otherblue shadow-lg p-4"}>
-                        <div className="flex justify-end items-center gap-2">
+    <div style={style} className={isMinimized.includes(emp.employee_id) ? "w-[500px] bg-gradient-to-b from-blue to-spblue rounded-xl text-otherblue shadow-lg p-4": "w-[700px] bg-gradient-to-b from-blue to-spblue rounded-xl text-otherblue shadow-lg p-4"}>
+                        <div className="flex justify-between items-center mb-4">
+                            <div ref={setNodeRef} {...attributes} {...listeners} >
+                                <RiDragDropLine className="text-2xl hover:scale-110 cursor-pointer"/>
+                            </div>
+                            <div className="flex gap-2">
                             {isMinimized.includes(emp.employee_id) ? <MdOutlineOpenInFull onClick={()=>handleDiMinimize(emp.employee_id)} className="text-xl hover:scale-110 rounded-full cursor-pointer"/> :
                             <FiMinus onClick={()=>handleMinimize(emp.employee_id)} className="text-2xl hover:scale-110 rounded-full cursor-pointer"/>}
                             <AlertDialog>
                                 <AlertDialogTrigger>
-                                    <AiOutlineDelete className="text-2xl hover:scale-110 rounded-full cursor-pointer"/>
+                                    <AiOutlineDelete className="text-2xl hover:scale-110 cursor-pointer"/>
                                 </AlertDialogTrigger>
                                 <AlertDialogContent>
                                     <AlertDialogHeader>
@@ -46,6 +64,7 @@ const Widget = ({emp, isMinimized, handleMinimize, handleDiMinimize, deleteEmplo
                                     </AlertDialogFooter>
                                 </AlertDialogContent>
                             </AlertDialog>
+                            </div>
                         </div>
                         <div>
                             <label className="font-bold" htmlFor="employeeName">Employee Name </label>
@@ -79,8 +98,8 @@ const Widget = ({emp, isMinimized, handleMinimize, handleDiMinimize, deleteEmplo
                                 <label className="font-bold" htmlFor="employeeid">Department Id</label>
                                 <select className="bg-transparent border-2 border-otherblue/50 outline-none w-[100px] rounded-md" >
                                     <option value="employeename">{emp.department_id}</option>
-                            </select>
-                        </div>
+                                </select>
+                            </div>
                     </div>
                 </div>
   )

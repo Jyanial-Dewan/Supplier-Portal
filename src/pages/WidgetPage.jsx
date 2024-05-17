@@ -1,12 +1,15 @@
 import GlobalContext from "@/context/GlobalContext"
 import { useContext, useState } from "react"
 import DepartmentWidget from "@/CustomComponets/DepartmentWidget"
-import Widget from "@/CustomComponets/Widget";
 import { supabase } from "@/client";
 import toast from "react-hot-toast";
 import { AiOutlineSave } from "react-icons/ai";
 import { AiOutlineClose } from "react-icons/ai";
 import { BiAddToQueue } from "react-icons/bi";
+import { DndContext, closestCenter } from "@dnd-kit/core";
+import WidgetContext from "@/context/WidgetContext";
+import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import Widget from "@/CustomComponets/Widget";
 
 const WidgetPage = () => {
     const context = useContext(GlobalContext)
@@ -22,15 +25,11 @@ const WidgetPage = () => {
     const [emp_department_id, setEmp_Department_id] = useState('101')
     const [job_title, setJob_title] = useState('')
     const [showAddEmployee, setShowAddEmployee] = useState(false)
-    console.log("isminized", isMinimized)
+   
     
     
-    const sortedEmployees = employees.sort(function(a,b){
-        return a.employee_id - b.employee_id
-      });
-
-    const filterEmplpoyee = (depID)=> {
-        const newEmployeesList = sortedEmployees.filter((employee)=> employee.department_id === depID);
+   const filterEmplpoyee = (depID)=> {
+        const newEmployeesList = employees.filter((employee)=> employee.department_id === depID);
         setNewEmployees(newEmployeesList)
         const newDepartmentList = departments.filter((dep)=> dep.department_id === depID);
         setNewDepartments(newDepartmentList)
@@ -100,8 +99,25 @@ const WidgetPage = () => {
                 setIsClicked('')
   }
 
+  const handleDragEnd =(event)=>{
+    const {active, over} = event
+    
+    console.log(active.id)
+    console.log(over.id)
+
+    if(active.id !== over.id) {
+        setNewEmployees((items)=> {
+            const activeIndex = items.indexOf(active.id);
+            const overIndex = items.indexOf(over.id)
+
+            return arrayMove(items, overIndex, activeIndex)
+        })
+    }
+  }
+
   return (
-    <div className={open? "pt-24 pl-[7rem] pr-4 duration-1000" : "pt-24 pl-[17.5rem] pr-4 duration-1000"}>
+    <WidgetContext.Provider value={{isMinimized: isMinimized, handleMinimize: handleMinimize, handleDiMinimize: handleDiMinimize, deleteEmployee: deleteEmployee}}>
+        <div className={open? "pt-24 pl-[7rem] pr-4 duration-1000" : "pt-24 pl-[17.5rem] pr-4 duration-1000"}>
       <div className="fixed flex flex-col gap-2 w-[200px]">
         {departments.map((dep) =>(
             <div onClick={()=>filterEmplpoyee(dep.department_id)} className={isClicked === dep.department_id ? "bg-otherblue text-white shadow-md rounded-md px-4 py-1 cursor-pointer": "bg-spblue/30 shadow-md rounded-md px-4 py-1 cursor-pointer "} key={dep.department_id}>
@@ -168,18 +184,21 @@ const WidgetPage = () => {
                     </div>
                 </div>
             </div>
-            {isClicked? newEmployees.map((emp)=> (
-                <div key={emp.employee_id} className={isDeleted.includes(emp.employee_id) ? 'hidden' : 'p-0'}>
-                    <Widget emp={emp} isMinimized={isMinimized} handleMinimize={handleMinimize} handleDiMinimize={handleDiMinimize} deleteEmployee={deleteEmployee}/>
-                </div>
-            )): employees.map((emp)=> (
-                <div key={emp.employee_id} className={isDeleted.includes(emp.employee_id) ? 'hidden' : 'p-0'}>
-                    <Widget emp={emp} isMinimized={isMinimized} handleMinimize={handleMinimize} handleDiMinimize={handleDiMinimize} deleteEmployee={deleteEmployee}/>
-                </div>
-            ))}
+            <DndContext onDragEnd={handleDragEnd} collisionDetection={closestCenter}>
+                <SortableContext items={newEmployees}
+                                 strategy={verticalListSortingStrategy}>
+                    {isClicked? newEmployees.map((emp)=> (
+                    <div key={emp.employee_id} className={isDeleted.includes(emp.employee_id) ? 'hidden' : 'p-0'}>
+                        <Widget key={emp.employee_id} id={emp} />
+                    </div>
+                    )): ''}
+                </SortableContext>
+            
+            </DndContext>
         </div>
       </div>
     </div>
+    </WidgetContext.Provider>
   )
 }
 
