@@ -144,7 +144,7 @@ const deleteEmployee = async (employeeID)=> {
   
 
   return (
-    <GlobalContext.Provider value={{open: open, setOpen: setOpen, allUsersData: allUsersData, deleteUser: deleteUser, fetchAllUsers: fetchAllUsers, token: token, setToken: setToken, employees: employees, fetchEmployees: fetchEmployees, deleteEmployee: deleteEmployee, fetchDepartments: fetchDepartments, departments: departments, deleteDepartment: deleteDepartment }}>
+    <GlobalContext.Provider value={{open: open, setOpen: setOpen, allUsersData: allUsersData, deleteUser: deleteUser, fetchAllUsers: fetchAllUsers, token: token, setToken: setToken, employees: employees, setEmployees: setEmployees, fetchEmployees: fetchEmployees, deleteEmployee: deleteEmployee, fetchDepartments: fetchDepartments, departments: departments, deleteDepartment: deleteDepartment }}>
       <Routes>
         <Route path="/signup" element={<SignUpPage/>}/>
         <Route path="/" element={token? <MainLayout/>: <LoginPage/>}>

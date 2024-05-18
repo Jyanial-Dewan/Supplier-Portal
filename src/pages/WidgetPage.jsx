@@ -1,5 +1,5 @@
 import GlobalContext from "@/context/GlobalContext"
-import { useContext, useState } from "react"
+import { useContext, useState, useEffect } from "react"
 import DepartmentWidget from "@/CustomComponets/DepartmentWidget"
 import { supabase } from "@/client";
 import toast from "react-hot-toast";
@@ -25,7 +25,14 @@ const WidgetPage = () => {
     const [emp_department_id, setEmp_Department_id] = useState('101')
     const [job_title, setJob_title] = useState('')
     const [showAddEmployee, setShowAddEmployee] = useState(false)
-   
+    
+    
+    const [dragEmployees, setDragEmployees] = useState([])
+    console.log(dragEmployees)
+
+    useEffect(()=>{
+        setDragEmployees(JSON.parse(localStorage.getItem("employees")))
+    }, [])
     
     
    const filterEmplpoyee = (depID)=> {
@@ -100,19 +107,15 @@ const WidgetPage = () => {
   }
 
   const handleDragEnd =(event)=>{
-    const {active, over} = event
-    
-    console.log(active.id)
-    console.log(over.id)
+    const {active: draggedItem, over: tragetItem} = event;
 
-    if(active.id !== over.id) {
-        setNewEmployees((items)=> {
-            const activeIndex = items.indexOf(active.id);
-            const overIndex = items.indexOf(over.id)
+    setNewEmployees(()=>{
+        const oldIndex = newEmployees.findIndex((emp)=> emp.employee_id === draggedItem.id.employee_id);
+        const newIndex = newEmployees.findIndex((emp)=> emp.employee_id === tragetItem.id.employee_id);
 
-            return arrayMove(items, overIndex, activeIndex)
-        })
-    }
+        return arrayMove(newEmployees, oldIndex, newIndex)
+    })
+
   }
 
   return (
@@ -127,8 +130,15 @@ const WidgetPage = () => {
       </div>
       <div className="ml-[230px] flex flex-col bg-spblue/30 py-6 rounded-lg w-[750px] items-center">
         {isClicked? <div>
-            <DepartmentWidget newDepartments={newDepartments}/>
-        </div> : ''}
+                        <DepartmentWidget newDepartments={newDepartments}/>
+                    </div> : 
+                    <div>
+                        <div className="w-[200px] h-[200px] border border-dotted border-blue flex justify-center items-center">
+                            <div>Drag Here</div>
+                        </div>
+                    </div>}
+
+        
 
         <div className="w-[90%] mx-auto bg-blue h-[2px] my-8"></div>
 
