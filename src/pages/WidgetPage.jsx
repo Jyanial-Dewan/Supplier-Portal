@@ -7,15 +7,15 @@ import { AiOutlineSave } from "react-icons/ai";
 import { AiOutlineClose } from "react-icons/ai";
 import { BiAddToQueue } from "react-icons/bi";
 import { DndContext, closestCenter } from "@dnd-kit/core";
-import WidgetContext from "@/context/WidgetContext";
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import WidgetContext from "@/context/WidgetContext";
 import Widget from "@/CustomComponets/Widget";
 
 const WidgetPage = () => {
     const context = useContext(GlobalContext)
     const { open, employees, departments, fetchEmployees } = context
     const [newEmployees, setNewEmployees] = useState(employees)
-    const [newDepartments, setNewDepartments] = useState(departments)
     const [isClicked, setIsClicked] = useState('');
     const [isMinimized, setIsMinimized] = useState([])
     const [isDeleted, setIsDeleted] = useState([])
@@ -25,32 +25,30 @@ const WidgetPage = () => {
     const [emp_department_id, setEmp_Department_id] = useState('101')
     const [job_title, setJob_title] = useState('')
     const [showAddEmployee, setShowAddEmployee] = useState(false)
+    const [newDepartments, setNewDepartments] = useState([])
+    const [dropDepartments, setDropDepartments] = useState([])
     
-    
-    const [dragEmployees, setDragEmployees] = useState([])
-    console.log(dragEmployees)
+    useEffect(()=>{
+        setNewDepartments(departments)
+    }, [departments])
+
+    const sortedEmployee = employees.sort(function(a,b){
+        return a.employee_id - b.employee_id
+    })
 
     useEffect(()=>{
-        setDragEmployees(JSON.parse(localStorage.getItem("employees")))
-    }, [])
+        setIsMinimized(JSON.parse(localStorage.getItem("isMinimized")))
+    },[])
+    
     
     
    const filterEmplpoyee = (depID)=> {
-        const newEmployeesList = employees.filter((employee)=> employee.department_id === depID);
+        const newEmployeesList = sortedEmployee.filter((employee)=> employee.department_id === depID);
         setNewEmployees(newEmployeesList)
         const newDepartmentList = departments.filter((dep)=> dep.department_id === depID);
         setNewDepartments(newDepartmentList)
         setIsClicked(depID)
        }
-
-    const handleMinimize = (empId) => {
-        setIsMinimized((prev)=> [...prev, empId])
-    }
-    
-    const handleDiMinimize = (id)=> {
-        const array = isMinimized.filter((i) => i !== id)
-        setIsMinimized(array)
-    }
 
     const deleteEmployee = async (employeeID)=> {
     
@@ -119,11 +117,11 @@ const WidgetPage = () => {
   }
 
   return (
-    <WidgetContext.Provider value={{isMinimized: isMinimized, handleMinimize: handleMinimize, handleDiMinimize: handleDiMinimize, deleteEmployee: deleteEmployee}}>
+    <WidgetContext.Provider value={{isMinimized: isMinimized, setIsMinimized: setIsMinimized, deleteEmployee: deleteEmployee}}>
         <div className={open? "pt-24 pl-[7rem] pr-4 duration-1000" : "pt-24 pl-[17.5rem] pr-4 duration-1000"}>
       <div className="fixed flex flex-col gap-2 w-[200px]">
         {departments.map((dep) =>(
-            <div onClick={()=>filterEmplpoyee(dep.department_id)} className={isClicked === dep.department_id ? "bg-otherblue text-white shadow-md rounded-md px-4 py-1 cursor-pointer": "bg-spblue/30 shadow-md rounded-md px-4 py-1 cursor-pointer "} key={dep.department_id}>
+            <div onClick={()=>filterEmplpoyee(dep.department_id)} className={isClicked === dep.department_id ? "bg-blue/80 shadow-md rounded-md px-4 py-1 cursor-pointer": "bg-spblue/30 shadow-md rounded-md px-4 py-1 cursor-pointer "} key={dep.department_id}>
                 {dep.department_name}
             </div>
         ))}
@@ -137,8 +135,6 @@ const WidgetPage = () => {
                             <div>Drag Here</div>
                         </div>
                     </div>}
-
-        
 
         <div className="w-[90%] mx-auto bg-blue h-[2px] my-8"></div>
 

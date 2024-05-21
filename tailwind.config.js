@@ -18,6 +18,9 @@ module.exports = {
     },
     extend: {
       colors: {
+        newblack: "#42032C",
+        newpink: "#F1EFDC",
+        newwhite: "#4A403A",
         blue: "#678983",
         spblue: "#F0E9D2",
         otherblue: "#181D31",

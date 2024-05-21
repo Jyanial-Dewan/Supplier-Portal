@@ -27,8 +27,8 @@ import TokenQrCode from "./pages/TokenQrCode"
 import EmployeesPage from "./pages/EmployeesPage"
 import AddEmployee from "./pages/AddEmployeePage"
 import UpadateEmployee from "./pages/UpdateEmployee"
-import DragAndDrop from "./pages/DragAndDrop"
 import WidgetPage from "./pages/WidgetPage"
+import WidgetTwo from "./pages/WidgetTwo"
 import { supabase } from "./client"
 import toast from "react-hot-toast"
 
@@ -38,6 +38,9 @@ const App = () => {
   const [allUsersData, setAllUsersData] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [departments, setDepartments] = useState([]);
+  const [students, setStudents] = useState([])
+
+ 
   useEffect(() => {
     supabase.auth.getSession()
       .then(({ data: { token } }) => {
@@ -51,7 +54,20 @@ const App = () => {
     return () => subscription.unsubscribe()
   }, []);
 
-  
+  useEffect(()=>{
+    const fetchStudents = async () => {
+        let { data: students, error } = await supabase
+                                        .from('students')
+                                        .select('*')
+            setStudents(students)  
+            console.log(error)                          
+    }
+    
+    fetchStudents()
+}, [])
+
+const sortedStudents = students.sort((a,b)=> a.position-b.position)
+
   const fetchAllUsers = async () => {
     try { 
         let { data: users } = await supabase
@@ -141,10 +157,9 @@ const deleteEmployee = async (employeeID)=> {
           fetchDepartments();
   }
 
-  
 
-  return (
-    <GlobalContext.Provider value={{open: open, setOpen: setOpen, allUsersData: allUsersData, deleteUser: deleteUser, fetchAllUsers: fetchAllUsers, token: token, setToken: setToken, employees: employees, setEmployees: setEmployees, fetchEmployees: fetchEmployees, deleteEmployee: deleteEmployee, fetchDepartments: fetchDepartments, departments: departments, deleteDepartment: deleteDepartment }}>
+return (
+    <GlobalContext.Provider value={{open: open, setOpen: setOpen, allUsersData: allUsersData, deleteUser: deleteUser, fetchAllUsers: fetchAllUsers, token: token, setToken: setToken, employees: employees, setEmployees: setEmployees, fetchEmployees: fetchEmployees, deleteEmployee: deleteEmployee, fetchDepartments: fetchDepartments, departments: departments, deleteDepartment: deleteDepartment, sortedStudents: sortedStudents }}>
       <Routes>
         <Route path="/signup" element={<SignUpPage/>}/>
         <Route path="/" element={token? <MainLayout/>: <LoginPage/>}>
@@ -170,7 +185,7 @@ const deleteEmployee = async (employeeID)=> {
           <Route path="/token-qr-code" element={<TokenQrCode/>}/>
           <Route path="/invite-user" element={<IniviteUserPage/>}/>
           <Route path="/updateuser/:id" element={<UpdateUserPage/>}/>
-          <Route path="/dragndrop" element={<DragAndDrop/>}/>
+          <Route path="/dragndrop" element={<WidgetTwo/>}/>
           <Route path="/widget" element={<WidgetPage/>}/>
         </Route> 
         <Route path="*" element={<ErrorPage/>}/>

@@ -23,7 +23,9 @@ import { CSS } from "@dnd-kit/utilities"
 const Widget = (props) => {
     const emp = props.id
     const context = useContext(WidgetContext);
-    const {handleMinimize, isMinimized, handleDiMinimize, deleteEmployee} = context;
+    const {setIsMinimized, isMinimized, deleteEmployee} = context;
+    
+   
     const {
         attributes,
         listeners,
@@ -35,6 +37,24 @@ const Widget = (props) => {
     const style = {
         transform: CSS.Transform.toString(transform),
         transition
+    }
+
+    const handleMinimize = (empId) => {
+        setIsMinimized((prev)=>{
+            const newMinimized = [...prev, empId]
+            localStorage.setItem("isMinimized", JSON.stringify(newMinimized))
+            return newMinimized
+        })
+    }
+    
+    const handleDiMinimize = (id)=> {
+        setIsMinimized(()=>{
+            const newMinimized = isMinimized.filter((i) => i !== id)
+            localStorage.setItem("isMinimized", JSON.stringify(newMinimized))
+             return newMinimized
+        })
+        
+        // localStorage.setItem("isMinimized", JSON.stringify(isMinimized))
     }
 
   return (
