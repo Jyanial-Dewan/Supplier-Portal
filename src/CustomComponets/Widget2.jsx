@@ -5,7 +5,7 @@ import { RiDragDropLine } from "react-icons/ri";
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities";
 
-const Widget2 = ({student, setNewStudents, newStudents, index, deleteStudent}) => {
+const Widget2 = ({student, setMergedArray, mergedArray, index, deleteStudent}) => {
     const {
         attributes,
         listeners,
@@ -20,15 +20,15 @@ const Widget2 = ({student, setNewStudents, newStudents, index, deleteStudent}) =
    }
 
    const handleChange = (index, field, value) => {
-    const updatedStudents = [...newStudents];
+    const updatedStudents = [...mergedArray];
     updatedStudents[index][field] = value;
-    setNewStudents(updatedStudents);
+    setMergedArray(updatedStudents);
   };
 
   const handleMinimize = (index) => {
-    const updatedMinimized = [...newStudents];
+    const updatedMinimized = [...mergedArray];
     updatedMinimized[index].is_minimized = !updatedMinimized[index].is_minimized
-    setNewStudents(updatedMinimized)
+    setMergedArray(updatedMinimized)
  }
 
   

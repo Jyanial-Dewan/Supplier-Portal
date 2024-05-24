@@ -38,8 +38,8 @@ const App = () => {
   const [allUsersData, setAllUsersData] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [departments, setDepartments] = useState([]);
-  const [students, setStudents] = useState([])
-
+  const [students, setStudents] = useState([]);
+  const [widgetAttributes, setWidgetAttributes] = useState([])
  
   useEffect(() => {
     supabase.auth.getSession()
@@ -64,6 +64,18 @@ const App = () => {
     }
     
     fetchStudents()
+}, [])
+
+useEffect(()=>{
+  const fetchWidgetAttributes = async () => {
+      let { data: widgetAttributes, error } = await supabase
+                                      .from('student_widget_attributes')
+                                      .select('*')
+          setWidgetAttributes(widgetAttributes)  
+          console.log(error)                          
+  }
+  
+  fetchWidgetAttributes()
 }, [])
 
 const sortedStudents = students.sort((a,b)=> a.position-b.position)
@@ -159,7 +171,7 @@ const deleteEmployee = async (employeeID)=> {
 
 
 return (
-    <GlobalContext.Provider value={{open: open, setOpen: setOpen, allUsersData: allUsersData, deleteUser: deleteUser, fetchAllUsers: fetchAllUsers, token: token, setToken: setToken, employees: employees, setEmployees: setEmployees, fetchEmployees: fetchEmployees, deleteEmployee: deleteEmployee, fetchDepartments: fetchDepartments, departments: departments, deleteDepartment: deleteDepartment, sortedStudents: sortedStudents }}>
+    <GlobalContext.Provider value={{open: open, setOpen: setOpen, allUsersData: allUsersData, deleteUser: deleteUser, fetchAllUsers: fetchAllUsers, token: token, setToken: setToken, employees: employees, setEmployees: setEmployees, fetchEmployees: fetchEmployees, deleteEmployee: deleteEmployee, fetchDepartments: fetchDepartments, departments: departments, deleteDepartment: deleteDepartment, sortedStudents: sortedStudents, widgetAttributes: widgetAttributes }}>
       <Routes>
         <Route path="/signup" element={<SignUpPage/>}/>
         <Route path="/" element={token? <MainLayout/>: <LoginPage/>}>

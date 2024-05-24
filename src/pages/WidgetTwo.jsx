@@ -7,89 +7,102 @@ import { supabase } from "@/client"
 import toast from "react-hot-toast"
 import { AiOutlineSave } from "react-icons/ai";
 import { BiAddToQueue } from "react-icons/bi";
-import { AiOutlineClose } from "react-icons/ai";
-
 
 const WidgetTwo = () => {
     const context = useContext(GlobalContext)
-    const { open, sortedStudents } = context;
-    
-    const [student_name, setStudent_name] = useState('')
-    const [department, setDepartment] = useState('')
-    const [showAddStudent, setShowAddStudent] = useState(false)
-    const [isDeleted, setIsDeleted] = useState([])
-    const [isMinimized, setIsMinimized] = useState([])
+    const { open, sortedStudents, widgetAttributes } = context;
 
-    useEffect(()=>{
-        setIsMinimized(JSON.parse(localStorage.getItem("isMini")))
-    },[])
-    
+    const [isDeleted, setIsDeleted] = useState([])
     const [newStudents,setNewStudents] = useState([])
+    const [newWidgetAttributes, setNewWidgetAttributes] = useState([])
+    const [mergedArray, setMergedArray] = useState([])
+    console.log(mergedArray)
+    
     useEffect(()=>{
         setNewStudents(sortedStudents)
     },[sortedStudents])
     
-    const handleCancel = ()=> {
-        setShowAddStudent(false)
-        setStudent_name('')
-        setDepartment('')
+    useEffect(()=>{
+        setNewWidgetAttributes(widgetAttributes)
+    },[widgetAttributes])
+    
+    const maxValue = Math.max(...mergedArray.map(obj => obj.id));
+    console.log(maxValue)
+
+    const mergeArrays = (newStudents, newWidgetAttributes) => {
+        const newWidgetAttributesMap = newWidgetAttributes.reduce((acc, attribute) => {
+          acc[attribute.student_id] = attribute;
+          return acc;
+        }, {});
+    
+        return newStudents.map(student => ({
+          ...student,
+          ...newWidgetAttributesMap[student.id],
+        }));
+      };
+    
+      // Merge arrays on component mount
+      useEffect(() => {
+        const merged = mergeArrays(newStudents, newWidgetAttributes);
+        const sortedMerged = merged.sort((a,b)=>a.position - b.position)
+        setMergedArray(sortedMerged);
+      }, [newStudents, newWidgetAttributes]);
+
+    const handleAddInput = ()=> {
+        setMergedArray(prevInputs => [...prevInputs, {id: maxValue+1, name: '', department: '', is_minimized: false, position: 0, student_id: maxValue+1}]);
     }
 
     const handleDragEnd = (event) => {
         const {active, over} = event;
         if(active.id !== over.id){
-            setNewStudents(()=>{
-                const oldIndex = newStudents.findIndex((student)=> student.id === active.id);
-                const newIndex = newStudents.findIndex((student)=> student.id === over.id)
+            setMergedArray(()=>{
+                const oldIndex = mergedArray.findIndex((student)=> student.id === active.id);
+                const newIndex = mergedArray.findIndex((student)=> student.id === over.id)
     
-                return arrayMove(newStudents, oldIndex, newIndex)
+                return arrayMove(mergedArray, oldIndex, newIndex)
             })
         }
     }
 
-    const handleSave = async (e) => {
-        e.preventDefault()
-        const updates = newStudents.map((student, index) => ({
-          id: student.id,
-          name: student.name,
-          position: index,
-          is_minimized: student.is_minimized
-        }));
-
-        if(student_name !== '') {
-            const { data, error } = await supabase
-                            .from('students')
-                            .insert({ name: student_name,
-                                        department: department
-                                },)
-                            .select()
-        if(error) {
-            console.log(error)
-        } else {
-            console.log(data)
-        }
-
-        setShowAddStudent(false)
-        setStudent_name('')
-        setDepartment('')
-        
-        }
+    const upsertMultipleTables  = async (updates, attributesUpdate) => {
+        try {
+          // Upsert users
+          const { data: studentData, error: userError } = await supabase
+            .from('students')
+            .upsert(updates, { onConflict: ['id'] }); // Ensure 'id' is a unique constraint
     
-        const { data, error } = await supabase
-          .from('students') 
-          .upsert(updates, { onConflict: ['id'] });
+          if (userError) throw userError;
     
-        if (error) {
+          // Upsert departments
+          const { data: attributesData, error: departmentError } = await supabase
+            .from('student_widget_attributes')
+            .upsert(attributesUpdate, { onConflict: ['student_id'] }); // Ensure 'id' is a unique constraint
+    
+          if (departmentError) throw departmentError;
+    
+        } catch (error) {
           console.log(error)
-          toast.error('there is a problem updating student')
-        } else {
-            console.log(data)
-          toast.success('students updated successfully')
-        }
+        } 
+      };
 
-       };
+      const handleSave = () => {
+        const updates = mergedArray.map((student) => ({
+            id: student.id,
+            name: student.name,
+            department: student.department,
+            
+          }));
+          const attributesUpdate = mergedArray.map((student, index)=> ({
+            student_id: student.id,
+            position: index,
+            is_minimized: student.is_minimized
+        }))
+    
+        upsertMultipleTables(updates, attributesUpdate);
+      };
+    
 
-      const deleteStudent = async (id)=> {
+    const deleteStudent = async (id)=> {
     
         const { error } = await supabase
               .from('students')
@@ -112,40 +125,17 @@ const WidgetTwo = () => {
                 <button type="submit" onClick={handleSave} className={open? "bg-blue p-3 rounded-full hover:scale-105 fixed right-[295px] duration-1000" : "bg-blue/80 p-3 rounded-full hover:scale-105 fixed right-[210px] duration-1000"}>
                     <AiOutlineSave className="text-2xl"/> 
                 </button>
-                <button onClick={()=> setShowAddStudent(true)} className="bg-blue p-3 rounded-full hover:scale-105 fixed">
+                <button onClick={()=> handleAddInput()} className="bg-blue p-3 rounded-full hover:scale-105 fixed">
                     <BiAddToQueue className="text-2xl"/>
                 </button>
             </div>
 
-            <div className={showAddStudent? "w-[700px] bg-gradient-to-b from-blue to-spblue rounded-xl text-black shadow-lg shadow-blue p-4 mb-6 mt-20": "hidden"}>
-                <div className="flex justify-end mb-2">
-                    <AiOutlineClose onClick={handleCancel} className="text-2xl hover:scale-110 cursor-pointer"/>
-                </div>
-
-                <div className="flex justify-between">
-                    <div className="flex gap-4">
-                        <label className="font-bold">Student Name </label>
-                        <input type="text"
-                        value={student_name}
-                        onChange={(e)=>setStudent_name(e.target.value)}
-                        className="bg-transparent border-2 border-black/50 outline-none w-[200px] rounded-md pl-1"/>
-                    </div>
-
-                    <div className="flex gap-4">
-                        <label className="font-bold">Department</label>
-                        <input type="text"
-                        value={department}
-                        onChange={(e)=>setDepartment(e.target.value)}
-                        className="bg-transparent border-2 border-black/50 outline-none w-[200px] rounded-md pl-1"/>
-                    </div>
-                </div>
-            </div>
             <DndContext onDragEnd={handleDragEnd} collisionDetection={closestCenter}>
-                <SortableContext items={newStudents} strategy={verticalListSortingStrategy}>
-                    <div className={showAddStudent? "flex flex-col items-center gap-6": "flex flex-col items-center gap-6 mt-20"}>
-                        {newStudents.map((student, index)=> (
+                <SortableContext items={mergedArray} strategy={verticalListSortingStrategy}>
+                    <div className="flex flex-col items-center gap-6">
+                        {mergedArray.map((student, index)=> (
                             <div key={student.id} className={isDeleted.includes(student.id) ? "hidden" : "mt-0"}>
-                                <Widget2 student={student} newStudents={newStudents} setNewStudents={setNewStudents} index={index} deleteStudent={deleteStudent} setIsMinimized={setIsMinimized} isMinimized={isMinimized}/>
+                                <Widget2 student={student} mergedArray={mergedArray} setMergedArray={setMergedArray} index={index} deleteStudent={deleteStudent}/>
                             </div>
                             
                         ))}
