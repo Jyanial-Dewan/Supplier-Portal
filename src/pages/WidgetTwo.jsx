@@ -12,7 +12,6 @@ const WidgetTwo = () => {
     const context = useContext(GlobalContext)
     const { open, sortedStudents, widgetAttributes } = context;
 
-    const [isDeleted, setIsDeleted] = useState([])
     const [newStudents,setNewStudents] = useState([])
     const [newWidgetAttributes, setNewWidgetAttributes] = useState([])
     const [mergedArray, setMergedArray] = useState([])
@@ -66,19 +65,27 @@ const WidgetTwo = () => {
 
     const upsertMultipleTables  = async (updates, attributesUpdate) => {
         try {
-          // Upsert users
-          const { data: studentData, error: userError } = await supabase
+          // Upsert Students
+          const { data: studentData, error: studentsError } = await supabase
             .from('students')
             .upsert(updates, { onConflict: ['id'] }); // Ensure 'id' is a unique constraint
     
-          if (userError) throw userError;
+          if (studentsError) {
+            toast.error(studentsError.message)
+          } else {
+            toast.success("students data has been updated successfully")
+          }
     
-          // Upsert departments
-          const { data: attributesData, error: departmentError } = await supabase
+          // Upsert Attributes
+          const { data: attributesData, error: attributesError } = await supabase
             .from('student_widget_attributes')
             .upsert(attributesUpdate, { onConflict: ['student_id'] }); // Ensure 'id' is a unique constraint
     
-          if (departmentError) throw departmentError;
+          if (attributesError) {
+            toast.error(attributesError.message)
+          } else {
+            toast.success('widget attributes has been updated successfully')
+          }
     
         } catch (error) {
           console.log(error)
@@ -100,41 +107,58 @@ const WidgetTwo = () => {
     
         upsertMultipleTables(updates, attributesUpdate);
       };
-    
 
-    const deleteStudent = async (id)=> {
+      const deleteStudent = async (id)=> {
+      if(newStudents.length < mergedArray.length) {
+        const newArray = mergedArray.filter(student => student.id !== id);
+        setMergedArray(newArray)
     
+      } 
+
+      if(newStudents.length >= mergedArray.length) {
         const { error } = await supabase
               .from('students')
               .delete()
               .eq('id', id)
       
               if(error) {
-                console.log(error)
-                toast.error('there is a problem deleting student')
+                toast.error(error.message)
               } else {
                 toast.success('student has been deleted successfully')
-                setIsDeleted((prev) => [...prev, id])
               }
+        const { error: err } = await supabase
+              .from('student_widget_attributes')
+              .delete()
+              .eq('student_id', id)
+      
+              if(err) {
+                toast.error(err.message)
+              } else {
+                toast.success('student attributes has been deleted successfully')
+              } 
+        const newArray = mergedArray.filter(student => student.id !== id);
+          setMergedArray(newArray)
+      }
+        
       }
 
    return (
     <section className={open? "pt-24 pl-[7rem] pr-4 duration-1000 flex justify-center mb-8" : "pt-24 pl-[17.5rem] pr-4 duration-1000 flex justify-center mb-8"}>
         <div className="border-2 border-blue rounded-lg w-[750px] p-6">
-            <div className="flex gap-6 justify-end">
-                <button type="submit" onClick={handleSave} className={open? "bg-blue p-3 rounded-full hover:scale-105 fixed right-[295px] duration-1000" : "bg-blue/80 p-3 rounded-full hover:scale-105 fixed right-[210px] duration-1000"}>
+            <div className="flex gap-4 justify-end fixed">
+                <button type="submit" onClick={handleSave} className="bg-blue p-3 rounded-full hover:scale-105">
                     <AiOutlineSave className="text-2xl"/> 
                 </button>
-                <button onClick={()=> handleAddInput()} className="bg-blue p-3 rounded-full hover:scale-105 fixed">
+                <button onClick={()=> handleAddInput()} className="bg-blue p-3 rounded-full hover:scale-105">
                     <BiAddToQueue className="text-2xl"/>
                 </button>
             </div>
 
             <DndContext onDragEnd={handleDragEnd} collisionDetection={closestCenter}>
                 <SortableContext items={mergedArray} strategy={verticalListSortingStrategy}>
-                    <div className="flex flex-col items-center gap-6">
+                    <div className="flex flex-col items-center gap-6 mt-20">
                         {mergedArray.map((student, index)=> (
-                            <div key={student.id} className={isDeleted.includes(student.id) ? "hidden" : "mt-0"}>
+                            <div key={student.id} className="mt-0">
                                 <Widget2 student={student} mergedArray={mergedArray} setMergedArray={setMergedArray} index={index} deleteStudent={deleteStudent}/>
                             </div>
                             
