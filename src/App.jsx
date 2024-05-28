@@ -19,6 +19,7 @@ import SignUpPage from "./pages/SignUpPage"
 import IniviteUserPage from "./pages/IniviteUserPage"
 import AlertPage from "./pages/AlertPage"
 import TaskPage from "./pages/TaskPage"
+import StudentsDND2 from "./pages/Dnd"
 import DepartmentsPage from "./pages/DepartmentsPage"
 import CreateDepartment from "./pages/CreateDepartment"
 import UpadateDepartment from "./pages/UpadateDepartment"
@@ -177,7 +178,7 @@ return (
         <Route path="/" element={token? <MainLayout/>: <LoginPage/>}>
           <Route path="/homepage" element={<Home/>}/>
           <Route path="/alert" element={<AlertPage/>}/>
-          <Route path="/tasks" element={<TaskPage/>}/>
+          <Route path="/tasks" element={<StudentsDND2/>}/>
           <Route path="/notification/inbox" element={<NotificationPage/>}/>
           <Route path="/notification/sent" element={<SentPage/>}/>
           <Route path="/notification/draft" element={<DraftPage/>}/>

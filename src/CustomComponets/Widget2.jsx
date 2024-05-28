@@ -1,7 +1,7 @@
 import { FiMinus } from "react-icons/fi";
 import { AiOutlineDelete } from "react-icons/ai";
 import { MdOutlineOpenInFull } from "react-icons/md";
-import { RiDragDropLine } from "react-icons/ri";
+
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities";
 
@@ -36,8 +36,8 @@ const Widget2 = ({student, setMergedArray, mergedArray, index, deleteStudent}) =
     <section>
         <div style={style} className={student.is_minimized ? "w-[400px] bg-gradient-to-b from-blue to-spblue rounded-xl text-black shadow-md shadow-blue p-4": "w-[700px] bg-gradient-to-b from-blue to-spblue rounded-xl text-black shadow-md shadow-black/50 p-4"} >
         <div className='flex justify-between items-center mb-4'>
-            <div  ref={setNodeRef} {...attributes} {...listeners}>
-                <RiDragDropLine className="text-2xl hover:scale-110 cursor-pointer"/>
+            <div  ref={setNodeRef} {...attributes} {...listeners} className={student.is_minimized? "px-[150px] py-4 cursor-grab": "px-[295px] py-4 cursor-grab"}>
+                
             </div>
             <div className="flex items-center gap-2">
                 {student.is_minimized ? 
