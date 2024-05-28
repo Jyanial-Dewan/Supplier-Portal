@@ -2,7 +2,7 @@ import GlobalContext from "@/context/GlobalContext"
 import { useContext, useEffect, useState } from "react"
 import Widget2 from "@/CustomComponets/Widget2"
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragOverlay } from "@dnd-kit/core"
-import { SortableContext, verticalListSortingStrategy, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
+import { SortableContext, verticalListSortingStrategy, sortableKeyboardCoordinates, arrayMove } from "@dnd-kit/sortable"
 import { supabase } from "@/client"
 import toast from "react-hot-toast"
 import { AiOutlineSave } from "react-icons/ai";
@@ -63,6 +63,10 @@ const WidgetTwo = () => {
           const activeIndexInRight = mergedArray.findIndex(widget => widget.id === active.id);
           const overIndexInLeft = dragArray.findIndex(widget => widget.id === over.id);
           const overIndexInRight = mergedArray.findIndex(widget => widget.id === over.id);
+
+          setMergedArray((prevArray)=> {
+            return arrayMove(prevArray, activeIndexInRight, overIndexInRight)
+          })
     
           if (activeIndexInLeft !== -1) {
             const newDragArray = [...dragArray];
@@ -84,26 +88,26 @@ const WidgetTwo = () => {
               setDragArray([{id: idInteger, name: '', department: '', is_minimized: true, position: 0, student_id: idInteger}]);
             }
           } 
-          else if (activeIndexInRight !== -1) {
-            const newMergedArray = [...mergedArray];
-            const movedItem = newMergedArray.splice(activeIndexInRight, 1)[0];
+          // else if (activeIndexInRight !== -1) {
+          //   const newMergedArray = [...mergedArray];
+          //   const movedItem = newMergedArray.splice(activeIndexInRight, 1)[0];
     
-            if (overIndexInLeft !== -1) {
-              const newDragArray = [...dragArray];
-              newDragArray.splice(overIndexInLeft + 1, 0, movedItem); // Insert after the hovered item
-              setDragArray(newDragArray);
-            } else if (overIndexInRight !== -1) {
-              newMergedArray.splice(overIndexInRight, 0, movedItem);
-            } else {
-              const newDragArray = [...dragArray, movedItem]; // Insert at the bottom if no specific position
-              setDragArray(newDragArray);
-            }
+          //   if (overIndexInLeft !== -1) {
+          //     const newDragArray = [...dragArray];
+          //     newDragArray.splice(overIndexInLeft + 1, 0, movedItem); // Insert after the hovered item
+          //     setDragArray(newDragArray);
+          //   } else if (overIndexInRight !== -1) {
+          //     newMergedArray.splice(overIndexInRight, 0, movedItem);
+          //   } else {
+          //     const newDragArray = [...dragArray, movedItem]; // Insert at the bottom if no specific position
+          //     setDragArray(newDragArray);
+          //   }
     
-            setMergedArray(newMergedArray);
-            if (dragArray.length === 0) {
-              setDragArray([{id: idInteger, name: '', department: '', is_minimized: true, position: 0, student_id: idInteger}]);
-            }
-          }
+          //   setMergedArray(newMergedArray);
+          //   if (dragArray.length === 0) {
+          //     setDragArray([{id: idInteger, name: '', department: '', is_minimized: true, position: 0, student_id: idInteger}]);
+          //   }
+          // }
         }
       };
 
