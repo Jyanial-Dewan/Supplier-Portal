@@ -7,40 +7,44 @@ import { supabase } from "@/client"
 import toast from "react-hot-toast"
 import { AiOutlineSave } from "react-icons/ai";
 import { BiAddToQueue } from "react-icons/bi";
+import Spinner from "@/CustomComponets/Spinner"
 
 const WidgetTwo = () => {
     const context = useContext(GlobalContext)
-    const { open, sortedStudents, widgetAttributes } = context;
-
-    const [mergedArray, setMergedArray] = useState([])
-    console.log(mergedArray)
+    const { open, employees, widgetAttributes } = context;
     
+    const [mergedArray, setMergedArray] = useState([])
+    const [loading, setLoading] = useState(true)
+    console.log(mergedArray)
+
     const idInteger = Math.floor(Math.random()*100000);
-    const [dragArray, setDragArray] = useState([{id: idInteger, name: '', department: '', is_minimized: true, position: 0, student_id: idInteger}])
+    const [dragArray, setDragArray] = useState([{employee_id: idInteger, employee_name: '', first_name: '', last_name: '', job_title: '', email: '', department_id: 101, widget_state: true, position: 0}])
     console.log(dragArray)
 
     const [activeId, setActiveId] = useState(null);
-
-    const mergeArrays = (newStudents, newWidgetAttributes) => {
-        const newWidgetAttributesMap = newWidgetAttributes.reduce((acc, attribute) => {
-          acc[attribute.student_id] = attribute;
-          return acc;
-        }, {});
     
-        return newStudents.map(student => ({
-          ...student,
-          ...newWidgetAttributesMap[student.id],
-        }));
-      };
-    
+    const mergeArrays = (newEmployees, newWidgetAttributes) => {
+      const newWidgetAttributesMap = newWidgetAttributes.reduce((acc, attribute) => {
+        acc[attribute.employee_id] = attribute;
+        return acc;
+      }, {});
+  
+      return newEmployees.map(employee => ({
+        ...employee,
+        ...newWidgetAttributesMap[employee.employee_id],
+        
+      }));
+    };
+  
       // Merge arrays on component mount
-    useEffect(() => {
-        const merged = mergeArrays(sortedStudents, widgetAttributes);
+      useEffect(() => {
+        const merged = mergeArrays(employees, widgetAttributes);
         const sortedMerged = merged.sort((a,b)=>a.position - b.position)
         setMergedArray(sortedMerged);
-      }, [sortedStudents, widgetAttributes]);
+        setLoading(false)
+      }, [employees, widgetAttributes, ]);
 
-      const sensors = useSensors(
+    const sensors = useSensors(
         useSensor(PointerSensor),
         useSensor(KeyboardSensor, {
           coordinateGetter: sortableKeyboardCoordinates,
@@ -49,32 +53,60 @@ const WidgetTwo = () => {
 
     const handleDragStart = (event) => {
       const { active } = event;
-      setActiveId(active.id);
+      setActiveId(active.id.employee_id);
       };
-    
-      const handleDragEnd = (event) => {
+
+      const names = mergedArray.map(emp => emp.employee_name)
+      const condition1 = names.filter((name)=> (
+        name === ''
+      ));
+      console.log(condition1)
+
+    const handleDragEnd = (event) => {
         const { active, over } = event;
         setActiveId(null);
     
         if (!over) return;
     
         if (active.id !== over.id) {
-          const activeIndexInLeft = dragArray.findIndex(widget => widget.id === active.id);
-          const activeIndexInRight = mergedArray.findIndex(widget => widget.id === active.id);
-          const overIndexInLeft = dragArray.findIndex(widget => widget.id === over.id);
-          const overIndexInRight = mergedArray.findIndex(widget => widget.id === over.id);
+          const activeIndexInLeft = dragArray.findIndex(widget => widget.employee_id === active.id.employee_id);
+          const activeIndexInRight = mergedArray.findIndex(widget => widget.employee_id === active.id.employee_id);
+          const overIndexInLeft = dragArray.findIndex(widget => widget.employee_id === over.id.employee_id);
+          const overIndexInRight = mergedArray.findIndex(widget => widget.employee_id === over.id.employee_id);
+          const names = mergedArray.map(emp => emp.employee_name)
+          const jobs = mergedArray.map(emp => emp.job_title)
+          const emails = mergedArray.map(emp => emp.email)
+
+          const condition1 = names.filter((name)=> (
+            name === ''
+          ));
+    
+         const condition2 = jobs.filter((job)=> (
+          job === ''
+          ));
+        
+          const condition3 = emails.filter((email)=> (
+            email === ''
+            ))
 
           setMergedArray((prevArray)=> {
             return arrayMove(prevArray, activeIndexInRight, overIndexInRight)
           })
+          
+          if(condition1.length > 0 || condition2.length > 0 || condition3.length> 0 && activeIndexInLeft === -1){
+            toast.error('Input field can not be empty')
+            setMergedArray(mergedArray)
+            return
+          }
     
           if (activeIndexInLeft !== -1) {
             const newDragArray = [...dragArray];
-            const movedItem = newDragArray.splice(activeIndexInLeft, 1)[0];
+            let movedItem = newDragArray.splice(activeIndexInLeft, 1)[0];
+            movedItem.widget_state = false;
             
             if (overIndexInRight !== -1) {
               const newMergedArray = [...mergedArray];
-              newMergedArray.splice(overIndexInRight + 1, 0, movedItem); // Insert after the hovered item
+              newMergedArray.splice(overIndexInRight, 0, movedItem); // Insert after the hovered item
               setMergedArray(newMergedArray);
             } else if (overIndexInLeft !== -1) {
               newDragArray.splice(overIndexInLeft, 0, movedItem);
@@ -85,7 +117,7 @@ const WidgetTwo = () => {
     
             setDragArray(newDragArray);
             if (newDragArray.length === 0) {
-              setDragArray([{id: idInteger, name: '', department: '', is_minimized: true, position: 0, student_id: idInteger}]);
+              setDragArray([{employee_id: idInteger, employee_name: '', first_name: '', last_name: '', job_title: '', email: '', department_id: 101, widget_state: true, position: 0}]);
             }
           } 
           // else if (activeIndexInRight !== -1) {
@@ -112,25 +144,48 @@ const WidgetTwo = () => {
       };
 
     const handleAddInput = ()=> {
-        setMergedArray(prevInputs => [...prevInputs, {id: idInteger, name: '', department: '', is_minimized: false, position: 0, student_id: idInteger}]);
+      const names = mergedArray.map(emp => emp.employee_name)
+      const jobs = mergedArray.map(emp => emp.job_title)
+      const emails = mergedArray.map(emp => emp.email)
+
+      const condition1 = names.filter((name)=> (
+        name === ''
+      ));
+
+      const condition2 = jobs.filter((job)=> (
+      job === ''
+      ));
+    
+      const condition3 = emails.filter((email)=> (
+        email === ''
+      ))
+
+      if(condition1.length > 0 || condition2.length > 0 || condition3.length> 0 ){
+        toast.error('Input field can not be empty')
+        setMergedArray(mergedArray)
+        return
+      } else {
+        setMergedArray(prevInputs => [...prevInputs, {employee_id: idInteger, employee_name: '', first_name: '', last_name: '', job_title: '', email: '', department_id: 101, widget_state: false, position: 0}]);
+      }
+        
     }
 
     const renderActiveItem = () => {
       const activeWidget =
-        dragArray.find(widget => widget.id === activeId) ||
-        mergedArray.find(widget => widget.id === activeId);
+        dragArray.find(widget => widget.employee_id === activeId) ||
+        mergedArray.find(widget => widget.employee_id === activeId);
   
-      return activeWidget ? (
-        <div className="w-[400px] h-[100px] bg-white/30 p-4"></div>
-      ) : null;
+      return activeWidget.widget_state ? (
+        <div className="w-[300px] h-[100px] bg-blue/30 p-4 rounded-lg"></div>
+      ) : <div className="w-[600px] h-[180px] bg-blue/30 p-4 rounded-lg"></div>;
     };
 
     const upsertMultipleTables  = async (updates, attributesUpdate) => {
         try {
           // Upsert Students
           const { data: studentData, error: studentsError } = await supabase
-            .from('students')
-            .upsert(updates, { onConflict: ['id'] }); // Ensure 'id' is a unique constraint
+            .from('employees')
+            .upsert(updates, { onConflict: ['employee_id'] }); // Ensure 'id' is a unique constraint
     
           if (studentsError) {
             toast.error(studentsError.message)
@@ -140,8 +195,8 @@ const WidgetTwo = () => {
     
           // Upsert Attributes
           const { data: attributesData, error: attributesError } = await supabase
-            .from('student_widget_attributes')
-            .upsert(attributesUpdate, { onConflict: ['student_id'] }); // Ensure 'id' is a unique constraint
+            .from('employee_widget_attributes')
+            .upsert(attributesUpdate, { onConflict: ['employee_id'] }); // Ensure 'id' is a unique constraint
     
           if (attributesError) {
             toast.error(attributesError.message)
@@ -154,93 +209,145 @@ const WidgetTwo = () => {
         } 
       };
 
-      const handleSave = () => {
-        const updates = mergedArray.map((student) => ({
-            id: student.id,
-            name: student.name,
-            department: student.department,
-            
-          }));
-          const attributesUpdate = mergedArray.map((student, index)=> ({
-            student_id: student.id,
-            position: index,
-            is_minimized: student.is_minimized
-        }))
-    
-        upsertMultipleTables(updates, attributesUpdate);
-      };
+    const handleChange = (index, field, value) => {
+      const updatedStudents = [...mergedArray];
+      updatedStudents[index][field] = value;
+      setMergedArray(updatedStudents);
+      
+    };
 
-      const deleteStudent = async (id)=> {
-      if(sortedStudents.length < mergedArray.length) {
-        const newArray = mergedArray.filter(student => student.id !== id);
+    const handleSave = () => {
+      const employeeUpdates = mergedArray.map((employee) => ({
+        employee_id: employee.employee_id,
+        employee_name: employee.employee_name,
+        first_name: employee.first_name,
+        last_name:employee.last_name,
+        job_title:employee.job_title,
+        department_id: employee.department_id,
+        email: employee.email
+          
+        }));
+
+        const attribUtesUpdate = mergedArray.map((employee, index)=> ({
+          employee_id:employee.employee_id,
+          position: index,
+          widget_state: employee.widget_state
+      }))
+
+      const names = mergedArray.map(emp => emp.employee_name)
+      const jobs = mergedArray.map(emp => emp.job_title)
+      const emails = mergedArray.map(emp => emp.email)
+      const result = names.map((name)=> (
+        /\d/.test(name)
+      ))
+
+      const result1 = jobs.map((job)=> (
+        /\d/.test(job)
+      ))
+
+      const condition1 = names.filter((name)=> (
+        name === ''
+     ));
+
+     const condition2 = jobs.filter((job)=> (
+      job === ''
+    ))
+
+    const condition3 = emails.filter((email)=> (
+    email === ''
+    ))
+
+   if(condition1.length > 0 || condition2.length > 0 || condition3.length > 0) {
+        toast.error('Input field can not be empty')
+        return
+      } else if(result.includes(true) || result1.includes(true)) {
+        toast.error('Number is not accepted in Employee Name and Job Title')
+        return
+      } else {
+        upsertMultipleTables(employeeUpdates, attribUtesUpdate);
+      }
+      
+    };
+
+    const deleteEmployee = async (id)=> {
+      if(employees.length < mergedArray.length) {
+        const newArray = mergedArray.filter(employee => employee.employee_id !== id);
         setMergedArray(newArray)
-    
       } 
 
-      if(sortedStudents.length >= mergedArray.length) {
+      if(employees.length >= mergedArray.length) {
         const { error } = await supabase
-              .from('students')
+              .from('employees')
               .delete()
-              .eq('id', id)
+              .eq('employee_id', id)
       
               if(error) {
                 toast.error(error.message)
+                console.log(error)
               } else {
-                toast.success('student has been deleted successfully')
+                toast.success('employee has been deleted successfully')
               }
         const { error: err } = await supabase
-              .from('student_widget_attributes')
+              .from('employee_widget_attributes')
               .delete()
-              .eq('student_id', id)
+              .eq('employee_id', id)
       
               if(err) {
                 toast.error(err.message)
               } else {
-                toast.success('student attributes has been deleted successfully')
+                toast.success('employee attributes has been deleted successfully')
               } 
-        const newArray = mergedArray.filter(student => student.id !== id);
-          setMergedArray(newArray)
+
+              const newArray = mergedArray.filter(employee => employee.employee_id !== id);
+              setMergedArray(newArray)
       }
         
       }
 
-   return (
-    <DndContext onDragEnd={handleDragEnd} collisionDetection={closestCenter} onDragStart={handleDragStart} sensors={sensors}>
-    <section className={open? "pt-24 pl-[32rem] pr-4 duration-1000 flex gap-6 justify-center mb-8" : "pt-24 pl-[42.5rem] pr-4 duration-1000 flex gap-6 justify-center mb-8"}>
-        <div className={open? "fixed left-24 duration-1000": "fixed left-[16.5rem] duration-1000"}> 
-        <SortableContext items={dragArray} strategy={verticalListSortingStrategy}>
-          <div className="flex flex-col items-center gap-6 mt-20">
-            {dragArray.map((student)=> (
-              <div key={student.id} className="mt-0">
-                <Widget2 student={student}/>
-              </div>
-              ))}
-          </div>
-        </SortableContext>
-        </div>
-        <div className="border-2 border-blue rounded-lg w-[750px] p-6">
-            <div className="flex gap-4 justify-end fixed">
-                <button type="submit" onClick={handleSave} className="bg-blue p-3 rounded-full hover:scale-105">
-                    <AiOutlineSave className="text-2xl"/> 
-                </button>
-                <button onClick={()=> handleAddInput()} className="bg-blue p-3 rounded-full hover:scale-105">
-                    <BiAddToQueue className="text-2xl"/>
-                </button>
-            </div>
+     const handleMinimize = (index) => {
+        const updatedMinimized = [...mergedArray];
+        updatedMinimized[index].widget_state = !updatedMinimized[index].widget_state
+        setMergedArray(updatedMinimized)
+     }
 
-            <SortableContext items={mergedArray} strategy={verticalListSortingStrategy}>
-              <div className="flex flex-col items-center gap-6 mt-20">
-                  {mergedArray.map((student, index)=> (
-                    <div key={student.id} className="mt-0">
-                        <Widget2 student={student} mergedArray={mergedArray} setMergedArray={setMergedArray} index={index} deleteStudent={deleteStudent}/>
-                    </div>
-                    ))}
-                    </div>
-            </SortableContext>
-                
-            <DragOverlay>{activeId ? renderActiveItem() : null}</DragOverlay>    
+  return (
+    <DndContext onDragEnd={handleDragEnd} collisionDetection={closestCenter} onDragStart={handleDragStart} sensors={sensors}>
+    {loading? <Spinner/> :
+    <section className={open? "pt-24 pl-[32rem] pr-4 duration-1000 flex gap-6 justify-center mb-8" : "pt-24 pl-[42.5rem] pr-4 duration-1000 flex gap-6 justify-center mb-8"}>
+    <div className={open? "fixed left-32 top-[1rem] duration-1000": "fixed left-[18.5rem] top-[1rem] duration-1000"}> 
+    <SortableContext items={dragArray} strategy={verticalListSortingStrategy}>
+      <div className="flex flex-col items-center gap-6 mt-20">
+        {dragArray.map((employee)=> (
+          <div key={employee.id} className="mt-0">
+            <Widget2 id={employee}/>
+          </div>
+          ))}
+      </div>
+    </SortableContext>
+    </div>
+    <div className="border-2 border-dashed border-blue rounded-lg w-[650px] p-6">
+        <div className="flex gap-4 justify-end fixed">
+            <button type="submit" onClick={handleSave} className="bg-blue p-3 rounded-full hover:scale-105">
+                <AiOutlineSave className="text-2xl"/> 
+            </button>
+            <button onClick={()=> handleAddInput()} className="bg-blue p-3 rounded-full hover:scale-105">
+                <BiAddToQueue className="text-2xl"/>
+            </button>
         </div>
-    </section>
+
+        <SortableContext items={mergedArray} strategy={verticalListSortingStrategy}>
+          <div className="flex flex-col items-center gap-6 mt-20">
+              {mergedArray.map((employee, index)=> (
+                <div key={employee.id} className="mt-0">
+                    <Widget2 id={employee} index={index} deleteEmployee={deleteEmployee} handleChange={handleChange} handleMinimize={handleMinimize}/>
+                </div>
+                ))}
+                </div>
+        </SortableContext>
+            
+        <DragOverlay>{activeId ? renderActiveItem() : null}</DragOverlay>    
+    </div>
+</section>}
     </DndContext>
   )
 }

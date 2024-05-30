@@ -18,7 +18,7 @@ import AllUsersFour from "./pages/AllUsersFour"
 import SignUpPage from "./pages/SignUpPage"
 import IniviteUserPage from "./pages/IniviteUserPage"
 import AlertPage from "./pages/AlertPage"
-import TaskPage from "./pages/TaskPage"
+// import TaskPage from "./pages/TaskPage"
 import StudentsDND2 from "./pages/Dnd"
 import DepartmentsPage from "./pages/DepartmentsPage"
 import CreateDepartment from "./pages/CreateDepartment"
@@ -39,9 +39,8 @@ const App = () => {
   const [allUsersData, setAllUsersData] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [departments, setDepartments] = useState([]);
-  const [students, setStudents] = useState([]);
   const [widgetAttributes, setWidgetAttributes] = useState([])
- 
+  
   useEffect(() => {
     supabase.auth.getSession()
       .then(({ data: { token } }) => {
@@ -56,30 +55,18 @@ const App = () => {
   }, []);
 
   useEffect(()=>{
-    const fetchStudents = async () => {
-        let { data: students, error } = await supabase
-                                        .from('students')
+    const fetchWidgetAttributes = async () => {
+        let { data: widgetAttributes, error } = await supabase
+                                        .from('employee_widget_attributes')
                                         .select('*')
-            setStudents(students)  
+            setWidgetAttributes(widgetAttributes)  
             console.log(error)                          
     }
     
-    fetchStudents()
-}, [])
+    fetchWidgetAttributes()
+  }, [])
 
-useEffect(()=>{
-  const fetchWidgetAttributes = async () => {
-      let { data: widgetAttributes, error } = await supabase
-                                      .from('student_widget_attributes')
-                                      .select('*')
-          setWidgetAttributes(widgetAttributes)  
-          console.log(error)                          
-  }
-  
-  fetchWidgetAttributes()
-}, [])
 
-const sortedStudents = students.sort((a,b)=> a.position-b.position)
 
   const fetchAllUsers = async () => {
     try { 
@@ -172,7 +159,7 @@ const deleteEmployee = async (employeeID)=> {
 
 
 return (
-    <GlobalContext.Provider value={{open: open, setOpen: setOpen, allUsersData: allUsersData, deleteUser: deleteUser, fetchAllUsers: fetchAllUsers, token: token, setToken: setToken, employees: employees, setEmployees: setEmployees, fetchEmployees: fetchEmployees, deleteEmployee: deleteEmployee, fetchDepartments: fetchDepartments, departments: departments, deleteDepartment: deleteDepartment, sortedStudents: sortedStudents, widgetAttributes: widgetAttributes }}>
+    <GlobalContext.Provider value={{open: open, setOpen: setOpen, allUsersData: allUsersData, deleteUser: deleteUser, fetchAllUsers: fetchAllUsers, token: token, setToken: setToken, employees: employees, setEmployees: setEmployees, fetchEmployees: fetchEmployees, deleteEmployee: deleteEmployee, fetchDepartments: fetchDepartments, departments: departments, deleteDepartment: deleteDepartment, widgetAttributes: widgetAttributes }}>
       <Routes>
         <Route path="/signup" element={<SignUpPage/>}/>
         <Route path="/" element={token? <MainLayout/>: <LoginPage/>}>
