@@ -3,7 +3,8 @@ import { useContext, useEffect, useState } from "react"
 import Widget2 from "@/CustomComponets/Widget2"
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragOverlay } from "@dnd-kit/core"
 import { SortableContext, verticalListSortingStrategy, sortableKeyboardCoordinates, arrayMove } from "@dnd-kit/sortable"
-import { supabase } from "@/client"
+// import { supabase } from "@/client"
+import update from '../images/update.png'
 import toast from "react-hot-toast"
 import { AiOutlineSave } from "react-icons/ai";
 import { BiAddToQueue } from "react-icons/bi";
@@ -11,38 +12,49 @@ import Spinner from "@/CustomComponets/Spinner"
 
 const WidgetTwo = () => {
     const context = useContext(GlobalContext)
-    const { open, employees, widgetAttributes } = context;
+    const { open, localEmployees, localAttributes } = context;
     
     const [mergedArray, setMergedArray] = useState([])
     const [loading, setLoading] = useState(true)
+    const [updating, setUpdating] = useState(false)
+    
+    console.log(updating)
     console.log(mergedArray)
 
     const idInteger = Math.floor(Math.random()*100000);
-    const [dragArray, setDragArray] = useState([{employee_id: idInteger, employee_name: '', first_name: '', last_name: '', job_title: '', email: '', department_id: 101, widget_state: true, position: 0}])
+    const [dragArray, setDragArray] = useState([{emp_id: idInteger, emp_name: '', job_title: '', email: '', dep_id: 1, widget_state: true, positions: 0}])
     console.log(dragArray)
 
     const [activeId, setActiveId] = useState(null);
     
     const mergeArrays = (newEmployees, newWidgetAttributes) => {
       const newWidgetAttributesMap = newWidgetAttributes.reduce((acc, attribute) => {
-        acc[attribute.employee_id] = attribute;
+        acc[attribute.emp_id] = attribute;
         return acc;
       }, {});
   
       return newEmployees.map(employee => ({
         ...employee,
-        ...newWidgetAttributesMap[employee.employee_id],
+        ...newWidgetAttributesMap[employee.emp_id],
         
       }));
     };
   
       // Merge arrays on component mount
       useEffect(() => {
-        const merged = mergeArrays(employees, widgetAttributes);
-        const sortedMerged = merged.sort((a,b)=>a.position - b.position)
-        setMergedArray(sortedMerged);
-        setLoading(false)
-      }, [employees, widgetAttributes, ]);
+        try {
+          const merged = mergeArrays(localEmployees, localAttributes);
+          const sortedMerged = merged.sort((a,b)=>a.positions - b.positions)
+          setMergedArray(sortedMerged);
+        
+        } catch (error) {
+          console.log(error)
+        } finally {
+          setLoading(false)
+        }
+      }, [localEmployees, localAttributes, ]);
+
+      
 
     const sensors = useSensors(
         useSensor(PointerSensor),
@@ -53,14 +65,8 @@ const WidgetTwo = () => {
 
     const handleDragStart = (event) => {
       const { active } = event;
-      setActiveId(active.id.employee_id);
+      setActiveId(active.id.emp_id);
       };
-
-      const names = mergedArray.map(emp => emp.employee_name)
-      const condition1 = names.filter((name)=> (
-        name === ''
-      ));
-      console.log(condition1)
 
     const handleDragEnd = (event) => {
         const { active, over } = event;
@@ -69,11 +75,11 @@ const WidgetTwo = () => {
         if (!over) return;
     
         if (active.id !== over.id) {
-          const activeIndexInLeft = dragArray.findIndex(widget => widget.employee_id === active.id.employee_id);
-          const activeIndexInRight = mergedArray.findIndex(widget => widget.employee_id === active.id.employee_id);
-          const overIndexInLeft = dragArray.findIndex(widget => widget.employee_id === over.id.employee_id);
-          const overIndexInRight = mergedArray.findIndex(widget => widget.employee_id === over.id.employee_id);
-          const names = mergedArray.map(emp => emp.employee_name)
+          const activeIndexInLeft = dragArray.findIndex(widget => widget.emp_id === active.id.emp_id);
+          const activeIndexInRight = mergedArray.findIndex(widget => widget.emp_id === active.id.emp_id);
+          const overIndexInLeft = dragArray.findIndex(widget => widget.emp_id === over.id.emp_id);
+          const overIndexInRight = mergedArray.findIndex(widget => widget.emp_id === over.id.emp_id);
+          const names = mergedArray.map(emp => emp.emp_name)
           const jobs = mergedArray.map(emp => emp.job_title)
           const emails = mergedArray.map(emp => emp.email)
 
@@ -117,7 +123,7 @@ const WidgetTwo = () => {
     
             setDragArray(newDragArray);
             if (newDragArray.length === 0) {
-              setDragArray([{employee_id: idInteger, employee_name: '', first_name: '', last_name: '', job_title: '', email: '', department_id: 101, widget_state: true, position: 0}]);
+              setDragArray([{emp_id: idInteger, emp_name: '', job_title: '', email: '', dep_id: 1, widget_state: true, positions: 0}]);
             }
           } 
           // else if (activeIndexInRight !== -1) {
@@ -144,7 +150,7 @@ const WidgetTwo = () => {
       };
 
     const handleAddInput = ()=> {
-      const names = mergedArray.map(emp => emp.employee_name)
+      const names = mergedArray.map(emp => emp.emp_name)
       const jobs = mergedArray.map(emp => emp.job_title)
       const emails = mergedArray.map(emp => emp.email)
 
@@ -165,49 +171,49 @@ const WidgetTwo = () => {
         setMergedArray(mergedArray)
         return
       } else {
-        setMergedArray(prevInputs => [...prevInputs, {employee_id: idInteger, employee_name: '', first_name: '', last_name: '', job_title: '', email: '', department_id: 101, widget_state: false, position: 0}]);
+        setMergedArray(prevInputs => [...prevInputs, {emp_id: idInteger, emp_name: '', job_title: '', email: '', dep_id: 1, widget_state: false, positions: 0}]);
       }
         
     }
 
     const renderActiveItem = () => {
       const activeWidget =
-        dragArray.find(widget => widget.employee_id === activeId) ||
-        mergedArray.find(widget => widget.employee_id === activeId);
+        dragArray.find(widget => widget.emp_id === activeId) ||
+        mergedArray.find(widget => widget.emp_id === activeId);
   
       return activeWidget.widget_state ? (
         <div className="w-[300px] h-[100px] bg-blue/30 p-4 rounded-lg"></div>
       ) : <div className="w-[600px] h-[180px] bg-blue/30 p-4 rounded-lg"></div>;
     };
 
-    const upsertMultipleTables  = async (updates, attributesUpdate) => {
-        try {
-          // Upsert Students
-          const { data: studentData, error: studentsError } = await supabase
-            .from('employees')
-            .upsert(updates, { onConflict: ['employee_id'] }); // Ensure 'id' is a unique constraint
+    // const upsertMultipleTables  = async (updates, attributesUpdate) => {
+    //     try {
+    //       // Upsert Students
+    //       const { data: studentData, error: studentsError } = await supabase
+    //         .from('employees')
+    //         .upsert(updates, { onConflict: ['employee_id'] }); // Ensure 'id' is a unique constraint
     
-          if (studentsError) {
-            toast.error(studentsError.message)
-          } else {
-            toast.success("students data has been updated successfully")
-          }
+    //       if (studentsError) {
+    //         toast.error(studentsError.message)
+    //       } else {
+    //         toast.success("students data has been updated successfully")
+    //       }
     
-          // Upsert Attributes
-          const { data: attributesData, error: attributesError } = await supabase
-            .from('employee_widget_attributes')
-            .upsert(attributesUpdate, { onConflict: ['employee_id'] }); // Ensure 'id' is a unique constraint
+    //       // Upsert Attributes
+    //       const { data: attributesData, error: attributesError } = await supabase
+    //         .from('employee_widget_attributes')
+    //         .upsert(attributesUpdate, { onConflict: ['employee_id'] }); // Ensure 'id' is a unique constraint
     
-          if (attributesError) {
-            toast.error(attributesError.message)
-          } else {
-            toast.success('widget attributes has been updated successfully')
-          }
+    //       if (attributesError) {
+    //         toast.error(attributesError.message)
+    //       } else {
+    //         toast.success('widget attributes has been updated successfully')
+    //       }
     
-        } catch (error) {
-          console.log(error)
-        } 
-      };
+    //     } catch (error) {
+    //       console.log(error)
+    //     } 
+    //   };
 
     const handleChange = (index, field, value) => {
       const updatedStudents = [...mergedArray];
@@ -217,24 +223,23 @@ const WidgetTwo = () => {
     };
 
     const handleSave = () => {
+      
       const employeeUpdates = mergedArray.map((employee) => ({
-        employee_id: employee.employee_id,
-        employee_name: employee.employee_name,
-        first_name: employee.first_name,
-        last_name:employee.last_name,
+        emp_id: employee.emp_id,
+        emp_name: employee.emp_name,
         job_title:employee.job_title,
-        department_id: employee.department_id,
+        dep_id: employee.dep_id,
         email: employee.email
           
         }));
 
         const attribUtesUpdate = mergedArray.map((employee, index)=> ({
-          employee_id:employee.employee_id,
-          position: index,
+          emp_id:employee.emp_id,
+          positions: index,
           widget_state: employee.widget_state
       }))
 
-      const names = mergedArray.map(emp => emp.employee_name)
+      const names = mergedArray.map(emp => emp.emp_name)
       const jobs = mergedArray.map(emp => emp.job_title)
       const emails = mergedArray.map(emp => emp.email)
       const result = names.map((name)=> (
@@ -264,42 +269,110 @@ const WidgetTwo = () => {
         toast.error('Number is not accepted in Employee Name and Job Title')
         return
       } else {
-        upsertMultipleTables(employeeUpdates, attribUtesUpdate);
+        // upsertMultipleTables(employeeUpdates, attribUtesUpdate);
+        setUpdating(true)
+        const handleEmployeeUpsert = async () => {
+          try {
+            const response = await fetch('http://localhost:3000/upsert-employees', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(employeeUpdates)
+            });
+      
+            if (response.ok) {
+              toast.success('Employees records has been upserted successfully')
+            } else {
+              toast.error('There is a problem upserting employees records')
+            }
+          } catch (error) {
+            console.log(`Error: ${error.message}`);
+          } finally {
+            setUpdating(false)
+          }
+        };
+
+        handleEmployeeUpsert();
+
+        const handleAttributesUpsert = async () => {
+          try {
+            const response = await fetch('http://localhost:3000/upsert-attributes', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(attribUtesUpdate)
+            });
+      
+            if (response.ok) {
+              toast.success('Attributes records has been upserted successfully')
+            } else {
+              toast.error('There is a problem upserting attributes records')
+            }
+          } catch (error) {
+            console.log(`Error: ${error.message}`);
+          }
+        };
+
+        handleAttributesUpsert();
+        setUpdating(false);
+
+
       }
       
     };
 
-    const deleteEmployee = async (id)=> {
-      if(employees.length < mergedArray.length) {
-        const newArray = mergedArray.filter(employee => employee.employee_id !== id);
+    const deleteEmployee = async (id) => {
+      if(localEmployees.length < mergedArray.length) {
+        const newArray = mergedArray.filter(employee => employee.emp_id !== id);
         setMergedArray(newArray)
       } 
 
-      if(employees.length >= mergedArray.length) {
-        const { error } = await supabase
-              .from('employees')
-              .delete()
-              .eq('employee_id', id)
+      if(localEmployees.length >= mergedArray.length) {
+        // const { error } = await supabase
+        //       .from('employees')
+        //       .delete()
+        //       .eq('employee_id', id)
       
-              if(error) {
-                toast.error(error.message)
-                console.log(error)
-              } else {
-                toast.success('employee has been deleted successfully')
-              }
-        const { error: err } = await supabase
-              .from('employee_widget_attributes')
-              .delete()
-              .eq('employee_id', id)
+        //       if(error) {
+        //         toast.error(error.message)
+        //         console.log(error)
+        //       } else {
+        //         toast.success('employee has been deleted successfully')
+        //       }
+        // const { error: err } = await supabase
+        //       .from('employee_widget_attributes')
+        //       .delete()
+        //       .eq('employee_id', id)
       
-              if(err) {
-                toast.error(err.message)
-              } else {
-                toast.success('employee attributes has been deleted successfully')
-              } 
+        //       if(err) {
+        //         toast.error(err.message)
+        //       } else {
+        //         toast.success('employee attributes has been deleted successfully')
+        //       } 
+        const employeeResponse = await fetch(`http://localhost:3000/employees/${id}`, {
+              method: 'DELETE'
+            });
+      
+            if (employeeResponse.ok) {
+              toast.success('Emloyee record has been deleted')
+            } else {
+              toast.error('there is a problem deleting employee')
+            }
 
-              const newArray = mergedArray.filter(employee => employee.employee_id !== id);
-              setMergedArray(newArray)
+        const response = await fetch(`http://localhost:3000/attributes/${id}`, {
+          method: 'DELETE'
+        });
+  
+            if (response.ok) {
+              toast.success('Emloyee attribute record has been deleted')
+            } else {
+              toast.error('there is a problem deleting attribute')
+            }
+              
+        const newArray = mergedArray.filter(employee => employee.emp_id !== id);
+        setMergedArray(newArray)
       }
         
       }
@@ -333,6 +406,8 @@ const WidgetTwo = () => {
             <button onClick={()=> handleAddInput()} className="bg-blue p-3 rounded-full hover:scale-105">
                 <BiAddToQueue className="text-2xl"/>
             </button>
+            {updating ? <img src={update} className="w-12" /> : ''}
+            
         </div>
 
         <SortableContext items={mergedArray} strategy={verticalListSortingStrategy}>

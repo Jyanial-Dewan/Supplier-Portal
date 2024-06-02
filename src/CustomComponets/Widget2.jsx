@@ -21,7 +21,7 @@ import {
 
 const Widget2 = (props) => {
     const context = useContext(GlobalContext);
-    const {departments} = context;
+    const {localDepartments} = context;
     const employee = props.id;
     const handleChange = props.handleChange;
     const handleMinimize = props.handleMinimize;
@@ -66,7 +66,7 @@ const Widget2 = (props) => {
                                 <img className="w-12 hover:scale-110" src={no} />
                             </AlertDialogCancel>
                             <AlertDialogAction>
-                                <img className="w-12 hover:scale-110"  src={yes} onClick={()=>deleteEmployee(employee.employee_id)} />
+                                <img className="w-12 hover:scale-110"  src={yes} onClick={()=>deleteEmployee(employee.emp_id)} />
                             </AlertDialogAction>
                         </AlertDialogFooter>
                     </AlertDialogContent>
@@ -76,10 +76,10 @@ const Widget2 = (props) => {
 
         <form className="flex flex-col gap-4">
             <div className="flex gap-2">
-                <label className="font-bold">Employee Name </label>
+                <label className="font-bold">User Name </label>
                 <input type="text"
-                value={employee.employee_name}
-                onChange={e => handleChange(index, 'employee_name', e.target.value)}
+                value={employee.emp_name}
+                onChange={e => handleChange(index, 'emp_name', e.target.value)}
                 className="bg-transparent border-2 border-black/50 outline-none w-[130px] rounded-md pl-1"
                 required/>
             </div>
@@ -104,12 +104,12 @@ const Widget2 = (props) => {
                 </div>
 
                 <div className="flex flex-col gap-2">
-                    <label className="font-bold">Department ID</label>
-                    <select value={employee.department_id}
-                            onChange={e => handleChange(index, 'department_id', e.target.value)}
-                            className="bg-transparent border-2 border-black/50 outline-none w-[100px] rounded-md pl-1">
-                        {departments.map(dep => (
-                            <option key={dep.department_id} value={dep.department_id}>{`${dep.department_id}(${dep.department_name})`}</option>
+                    <label className="font-bold">Department Name</label>
+                    <select value={employee.dep_id}
+                            onChange={e => handleChange(index, 'dep_id', e.target.value)}
+                            className="bg-transparent border-2 border-black/50 outline-none w-[150px] rounded-md pl-1">
+                        {localDepartments.map(dep => (
+                            <option key={dep.dep_id} value={dep.dep_id}>{dep.dep_name}</option>
                         ))}
 
                     </select>

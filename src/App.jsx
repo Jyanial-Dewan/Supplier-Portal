@@ -40,7 +40,57 @@ const App = () => {
   const [employees, setEmployees] = useState([]);
   const [departments, setDepartments] = useState([]);
   const [widgetAttributes, setWidgetAttributes] = useState([])
-  
+  const [localDepartments, setLocalDepartments] = useState([]);
+  const [localEmployees, setLocalEmployees] = useState([]);
+  console.log(localEmployees);
+  const [localAttributes, setLocalAttributes] = useState([]);
+  console.log(localAttributes);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/departments');
+        const data = await response.json();
+        setLocalDepartments(data)
+       
+      } catch (error) {
+        console.log(error)
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/employees');
+        const data = await response.json();
+        setLocalEmployees(data)
+       
+      } catch (error) {
+        console.log(error)
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/attributes');
+        const data = await response.json();
+        setLocalAttributes(data)
+       
+      } catch (error) {
+        console.log(error)
+      }
+    };
+
+    fetchData();
+  }, []);
+
   useEffect(() => {
     supabase.auth.getSession()
       .then(({ data: { token } }) => {
@@ -159,7 +209,7 @@ const deleteEmployee = async (employeeID)=> {
 
 
 return (
-    <GlobalContext.Provider value={{open: open, setOpen: setOpen, allUsersData: allUsersData, deleteUser: deleteUser, fetchAllUsers: fetchAllUsers, token: token, setToken: setToken, employees: employees, setEmployees: setEmployees, fetchEmployees: fetchEmployees, deleteEmployee: deleteEmployee, fetchDepartments: fetchDepartments, departments: departments, deleteDepartment: deleteDepartment, widgetAttributes: widgetAttributes }}>
+    <GlobalContext.Provider value={{open: open, setOpen: setOpen, allUsersData: allUsersData, deleteUser: deleteUser, fetchAllUsers: fetchAllUsers, token: token, setToken: setToken, employees: employees, setEmployees: setEmployees, fetchEmployees: fetchEmployees, deleteEmployee: deleteEmployee, fetchDepartments: fetchDepartments, departments: departments, deleteDepartment: deleteDepartment, widgetAttributes: widgetAttributes, localDepartments: localDepartments, localEmployees: localEmployees, localAttributes: localAttributes }}>
       <Routes>
         <Route path="/signup" element={<SignUpPage/>}/>
         <Route path="/" element={token? <MainLayout/>: <LoginPage/>}>
